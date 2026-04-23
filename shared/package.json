@@ -1,0 +1,13 @@
+{
+    "name": "@shellbaby/shared",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./http-status": "./http-status.ts",
+        "./api-response": "./api-response.ts",
+        "./types": "./types/types.ts",
+        "./types/util": "./types/util.ts",
+        "./types/client": "./types/client.ts"
+    }
+}

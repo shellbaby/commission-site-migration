@@ -1,2 +1,8 @@
+packages:
+    - main
+    - shared
+
 onlyBuiltDependencies:
-  - better-sqlite3
+    - "@swc/core"
+    - better-sqlite3
+    - esbuild
