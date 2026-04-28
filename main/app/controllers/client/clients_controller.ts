@@ -5,9 +5,6 @@ import stringHelpers from "@adonisjs/core/helpers/string"
 import type { HttpContext } from "@adonisjs/core/http"
 import { signedUrlFor } from "@adonisjs/core/services/url_builder"
 import mail from "@adonisjs/mail/services/main"
-import { APIResponse } from "@shellbaby/shared/api-response"
-import { HttpStatus } from "@shellbaby/shared/http-status"
-import { ShowClientDTO } from "@shellbaby/shared/types/client"
 
 export default class ClientsController {
     /**
@@ -16,15 +13,16 @@ export default class ClientsController {
     async index({}: HttpContext) {}
 
     /**
-     * NO NEED - Display form to create a new record
+     * Display form to create a new record
      */
-    async create({}: HttpContext) {}
+    async create({ inertia }: HttpContext) {
+        return inertia.render("auth/signup", {})
+    }
 
     /**
      * Handle form submission for the create action
      */
     async store({ request, response }: HttpContext) {
-        // console.log(request.toJSON())
         const payload = await request.validateUsing(signupValidator)
 
         const verificationToken = stringHelpers.generateRandom(64)
@@ -34,23 +32,27 @@ export default class ClientsController {
         })
 
         const signedURL = signedUrlFor(
-            "auth.emails.verify",
+            "link.emails.verify",
             { uuid: client.clientUuid },
             {
-                expiresIn: "24h",
+                expiresIn: "30m",
                 prefixUrl: appUrl,
                 purpose: "email-verification",
             }
         )
 
-        await mail.send((msg) => {
-            msg.to(payload.email)
-                .subject("Verify Your Account")
-                .htmlView("email/verify", {
-                    client,
-                    url: signedURL,
-                })
-        })
+        try {
+            await mail.send((msg) => {
+                msg.to(payload.email)
+                    .subject("Verify Your Account")
+                    .htmlView("email/verify", {
+                        client,
+                        url: signedURL,
+                    })
+            })
+        } catch (error) {
+            console.error(error)
+        }
 
         response.encryptedCookie(
             "signup_status",
@@ -59,42 +61,40 @@ export default class ClientsController {
                 status: "pending",
             },
             {
-                httpOnly: false,
-                maxAge: "1h",
+                httpOnly: true,
+                maxAge: "30m",
                 path: "/",
                 sameSite: "lax",
                 secure: process.env.NODE_ENV === "production",
             }
         )
 
-        return response.created<APIResponse>({
-            statusCode: HttpStatus.CREATED,
-            success: true,
-            data: { message: "Client created" },
-        })
+        return response.redirect().toRoute("link.verify-instruction")
     }
 
     /**
      * Show individual record
      */
     async show({ response, auth }: HttpContext) {
-        const client = auth.getUserOrFail()
-        return response.ok<APIResponse<ShowClientDTO>>({
-            statusCode: HttpStatus.OK,
-            success: true,
-            data: {
-                email: client.email,
-                username: client.username,
-                uuid: client.clientUuid,
-                name: client.name ?? undefined,
-            },
-        })
+        // const client = auth.getUserOrFail()
+        // return response.ok<APIResponse<ShowClientDTO>>({
+        //     statusCode: HttpStatus.OK,
+        //     success: true,
+        //     data: {
+        //         email: client.email,
+        //         username: client.username,
+        //         uuid: client.clientUuid,
+        //         name: client.name ?? undefined,
+        //     },
+        // })
     }
 
     /**
-     * NO NEED - Edit individual record
+     * Edit individual record
      */
-    async edit({ params }: HttpContext) {}
+    async edit({ auth, inertia }: HttpContext) {
+        return inertia.render("profile", {})
+    }
 
     /**
      * Handle form submission for the edit action

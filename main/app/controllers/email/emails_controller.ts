@@ -2,20 +2,34 @@ import Client from "#models/client"
 import type { HttpContext } from "@adonisjs/core/http"
 
 export default class EmailsController {
-    async verify({ request, response, params }: HttpContext) {
-        if (!request.hasValidSignature("email-verification")) {
-            return response.badRequest({
-                message: "Invalid or expired verification link",
-            })
+    async show({ request, response, inertia }: HttpContext) {
+        const statusCookie = request.encryptedCookie("signup_status")
+
+        if (!statusCookie || statusCookie.status !== "pending") {
+            return response.redirect().toRoute("link.home")
         }
 
-        const client = await Client.findByOrFail("client_uuid", params.uuid)
-        client.isVerified = true
-        client.verificationToken = null
-        await client.save()
+        return inertia.render("auth/verify-email", {
+            email: statusCookie.email,
+        })
+    }
 
-        response.clearCookie("signup_status")
+    async verify({ request, response, params, inertia, auth }: HttpContext) {
+        if (!request.hasValidSignature("email-verification")) {
+            return inertia.render("errors/verification-failed", {})
+        }
 
-        return response.redirect().withQs(false).toPath("/?verified=true")
+        try {
+            const client = await Client.findByOrFail("client_uuid", params.uuid)
+            client.isVerified = true
+            client.verificationToken = null
+            await client.save()
+
+            await auth.use("web").login(client)
+            response.clearCookie("signup_status")
+            return response.redirect().withQs(false).toRoute("link.home")
+        } catch (error) {
+            return inertia.render("errors/verification-failed", {})
+        }
     }
 }

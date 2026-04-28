@@ -1,4 +1,4 @@
-import { PartialOnly } from "./util.ts"
+import { PartialOnly } from "./util"
 
 export interface Client {
     username: string

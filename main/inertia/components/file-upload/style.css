@@ -1,0 +1,89 @@
+[data-scope="file-upload"] {
+    --p-inline: calc(var(--spacing) * 6);
+    --p-block: calc(var(--spacing) * 3);
+
+    &[data-part="label"] {
+        font-weight: var(--font-weight-bold);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &[data-part="dropzone"] {
+        --min-height: var(--container-3xs);
+        --dropzone-gap: calc(var(--spacing) * 3);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: var(--dropzone-gap);
+        min-height: var(--min-height);
+        padding: var(--p-block) var(--p-inline);
+        border: 1px solid var(--color-black-muted);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        margin-top: calc(var(--spacing) * 1);
+
+        &:focus {
+            border-color: var(--color-primary);
+            outline: 2px solid var(--color-primary);
+        }
+
+        &:is([data-invalid]) {
+            border-color: var(--color-error);
+        }
+    }
+
+    &[data-part="item-group"] {
+        margin-top: calc(var(--spacing) * 6);
+    }
+
+    &[data-part="item"] {
+        display: grid;
+        column-gap: calc(var(--spacing) * 6);
+        grid-template-areas:
+            "preview name delete"
+            "preview size delete";
+        grid-template-columns: auto 1fr auto;
+        padding: var(--p-block) var(--p-inline);
+        border: 1px solid var(--color-black-muted);
+        border-radius: var(--radius-md);
+
+        &[data-variant="error"] {
+            background: oklch(from var(--color-error) l c h / 30%);
+            border-color: var(--color-error);
+        }
+    }
+
+    &[data-part="item-preview"] {
+        grid-area: preview;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    &[data-part="item-preview-image"] {
+        --size: calc(var(--spacing) * 12);
+
+        aspect-ratio: 1;
+        height: var(--size);
+        width: var(--size);
+        object-fit: scale-down;
+    }
+
+    &[data-part="item-name"] {
+        grid-area: name;
+        font-weight: var(--font-weight-medium);
+    }
+
+    &[data-part="item-size-text"] {
+        grid-area: size;
+        font-size: var(--text-sm);
+    }
+
+    &[data-part="item-delete-trigger"] {
+        grid-area: delete;
+        cursor: pointer;
+        align-self: flex-start;
+    }
+}

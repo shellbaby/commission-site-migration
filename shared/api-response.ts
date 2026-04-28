@@ -1,4 +1,4 @@
-import { HttpStatus } from "./http-status.ts"
+import { HttpStatus } from "./http-status"
 
 export type ErrorType = {
     message?: string

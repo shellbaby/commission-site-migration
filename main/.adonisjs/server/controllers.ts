@@ -11,7 +11,13 @@ export const controllers = {
   client: {
     Clients: () => import('#controllers/client/clients_controller'),
   },
+  commission: {
+    Commissions: () => import('#controllers/commission/commissions_controller'),
+  },
   email: {
     Emails: () => import('#controllers/email/emails_controller'),
+  },
+  page: {
+    Pages: () => import('#controllers/page/pages_controller'),
   },
 }

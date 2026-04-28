@@ -8,7 +8,7 @@ import Layout from "~/layouts/default"
 import { client } from "./client"
 import "./css/app.css"
 
-const appName = import.meta.env.VITE_APP_NAME || "AdonisJS"
+const appName = import.meta.env.VITE_APP_NAME || "Qilin Cafe"
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),

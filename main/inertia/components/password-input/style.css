@@ -1,0 +1,51 @@
+[data-scope="password-input"] {
+    &[data-part="root"] {
+        --gap: calc(var(--spacing) * 1);
+        --input-height: calc(var(--spacing) * 10);
+        --border-radius: var(--radius-md);
+        --input-p-inline: calc(var(--spacing) * 4);
+        --input-p-block: calc(var(--spacing) * 2);
+    }
+
+    &[data-part="label"] {
+        font-weight: var(--font-weight-bold);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &[data-part="control"] {
+        position: relative;
+    }
+
+    &[data-part="input"] {
+        width: 100%;
+        height: var(--input-height);
+        border: 1px solid var(--color-black-muted);
+        border-radius: var(--border-radius);
+        outline: none;
+        padding-inline: var(--input-p-inline);
+        padding-inline-end: calc(var(--spacing) * 6 + 24px);
+        margin-top: var(--gap);
+
+        &:is([data-variant="inline"]) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        &:focus {
+            border-color: var(--color-primary);
+            outline: 2px solid var(--color-primary);
+        }
+
+        &:is([data-invalid]) {
+            border-color: var(--color-error);
+        }
+    }
+
+    &[data-part="visibility-trigger"] {
+        position: absolute;
+        right: calc(var(--spacing) * 3);
+        top: calc(50% + var(--gap));
+        transform: translateY(calc(-50% - var(--gap) / 2));
+    }
+}

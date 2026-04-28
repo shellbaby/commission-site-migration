@@ -1,0 +1,25 @@
+[data-scope="avatar"] {
+    &[data-part="root"] {
+        --size: calc(var(--spacing) * 15);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-shrink: 0;
+        user-select: none;
+        border-radius: 9999px;
+        width: var(--size);
+        height: var(--size);
+        background-color: var(--color-primary);
+    }
+
+    &[data-part="image"],
+    &[data-part="fallback"] {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        border: 2px solid var(--color-black-muted);
+    }
+}

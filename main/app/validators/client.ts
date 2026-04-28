@@ -1,8 +1,18 @@
 import vine from "@vinejs/vine"
 
 const email = () => vine.string().email().normalizeEmail().trim().maxLength(255)
-const password = () => vine.string().minLength(8).maxLength(255)
-const username = () => vine.string().trim().minLength(3).maxLength(30)
+const password = () =>
+    vine
+        .string()
+        .regex(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/)
+        .confirmed()
+const username = () =>
+    vine
+        .string()
+        .trim()
+        .minLength(3)
+        .maxLength(30)
+        .regex(/^[a-zA-Z0-9][a-zA-Z0-9_-]{2,29}$/)
 
 export const signupValidator = vine.create({
     username: username().unique({
@@ -11,17 +21,10 @@ export const signupValidator = vine.create({
     }),
     email: email(),
     password: password(),
-    name: vine.string().alphaNumeric().maxLength(255).optional(),
+    name: vine.string().maxLength(255).optional(),
 })
 
-export const emailValidator = vine.create({
-    email: email(),
-})
-
-export const usernameValidator = vine.create({
+export const signinValidator = vine.create({
     username: vine.string().trim().maxLength(30),
-})
-
-export const passwordValidator = vine.create({
     password: vine.string(),
 })

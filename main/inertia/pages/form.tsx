@@ -1,0 +1,499 @@
+import { Head } from "@inertiajs/react"
+import { CaretUpDownIcon, CheckIcon, XIcon } from "@phosphor-icons/react"
+import { type CommissionType } from "@shellbaby/shared/types"
+import { Controller, useForm } from "react-hook-form"
+import {
+    Button,
+    Checkbox,
+    createListCollection,
+    Field,
+    Fieldset,
+    FileUpload,
+    FileUploadFileError,
+    Select,
+    useFileUpload,
+} from "~/components"
+import "~/css/form.css"
+import { InertiaProps } from "~/types"
+
+type PageProps = InertiaProps<{ commType: CommissionType | undefined }>
+
+export default function Page({ commType }: PageProps) {
+    const commTypes = createListCollection<{
+        label: string
+        value: CommissionType
+    }>({
+        items: [
+            { label: "Emote ($15)", value: "emote" },
+            { label: "Half Body ($25)", value: "half-body" },
+            { label: "Full Body ($35)", value: "full-body" },
+            {
+                label: "Reference Sheet ($75)",
+                value: "ref-sheet",
+            },
+        ],
+    })
+
+    interface FormValues {
+        name: string
+        email: string
+        telegram: string
+        discord: string
+        commType: CommissionType
+        idea: string
+        ref: FileList
+        notes: string
+        tosAgreement?: string
+        noReserveAgreement?: string
+    }
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        control,
+    } = useForm<FormValues>({
+        defaultValues: {
+            commType,
+        },
+    })
+
+    const formOnSubmit = handleSubmit((data: FormValues) => {
+        console.log(data)
+    })
+
+    const fileUploadErrorMessage: Record<FileUploadFileError, string> = {
+        FILE_EXISTS: "File already exists",
+        FILE_TOO_LARGE: "File size is too large (max. 5MB)",
+        TOO_MANY_FILES: "Maximum 5 files are allowed",
+        FILE_INVALID: "",
+        FILE_INVALID_TYPE: "",
+        FILE_TOO_SMALL: "",
+        REQUIRED: "Please provide at least one reference sheet",
+    }
+
+    const _MAX_FILE_SIZE = 1024 * 1024 * 5
+    const fileUploadValidate = (
+        file: File,
+        details: FileUpload.FileValidateDetails
+    ): FileUpload.FileError[] | null => {
+        console.log("file validate run")
+        if (
+            details.acceptedFiles.find(
+                (acceptFile) => acceptFile.name === file.name
+            )
+        ) {
+            return ["FILE_EXISTS"]
+        }
+
+        if (details.acceptedFiles.length >= 5) {
+            return ["TOO_MANY_FILES"]
+        }
+
+        if (file.size > _MAX_FILE_SIZE) {
+            return ["FILE_TOO_LARGE"]
+        }
+
+        return null
+    }
+
+    const fileUploadContext = useFileUpload({
+        validate: fileUploadValidate,
+        maxFiles: 5,
+        maxFileSize: _MAX_FILE_SIZE,
+        accept: "image/png,image/jpeg",
+    })
+
+    return (
+        <>
+            <Head title="Commission Form" />
+            <h2 className="mb-12 text-center">Commission Form</h2>
+            <form
+                className="rounded-default border-separator border-2 p-9"
+                onSubmit={formOnSubmit}
+                noValidate
+            >
+                <div id="form-slot">
+                    <div>
+                        <h5>Personal Info</h5>
+                    </div>
+                    <div id="form-group">
+                        <Field.Root invalid={!!errors.name} required>
+                            <Field.Label>Your name</Field.Label>
+                            <Field.Input
+                                placeholder="Name / Nickname"
+                                {...register("name", {
+                                    required:
+                                        "Please fill out your name/nickname",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9\s]{1,30}$/,
+                                        message:
+                                            "Only alphanumerical characters are allowed, max. 30 characters",
+                                    },
+                                })}
+                            />
+                            <Field.ErrorText>
+                                {errors.name?.message}
+                            </Field.ErrorText>
+                            <Field.HelperText asChild>
+                                <ul className="[&>li]:mt-0!">
+                                    <li>Alphanumerical characters only</li>
+                                    <li>Maximum 30 characters</li>
+                                </ul>
+                            </Field.HelperText>
+                        </Field.Root>
+
+                        <Field.Root invalid={!!errors.email} required>
+                            <Field.Label>Email</Field.Label>
+                            <Field.Input
+                                type="email"
+                                placeholder="your@email.com"
+                                {...register("email", {
+                                    required: "Please fill out your email",
+                                })}
+                            />
+                            <Field.ErrorText>
+                                {errors.email?.message}
+                            </Field.ErrorText>
+                        </Field.Root>
+
+                        <Fieldset.Root>
+                            <Fieldset.Legend>Other Contacts</Fieldset.Legend>
+                            <div className="mt-1 flex flex-col gap-3">
+                                <Field.Root>
+                                    <Field.Input
+                                        addon="Telegram"
+                                        placeholder="t.me/username"
+                                        {...register("telegram")}
+                                    />
+                                </Field.Root>
+
+                                <Field.Root>
+                                    <Field.Input
+                                        addon="Discord"
+                                        placeholder="Username"
+                                        {...register("discord")}
+                                    />
+                                </Field.Root>
+                            </div>
+                        </Fieldset.Root>
+                    </div>
+                </div>
+
+                <div id="form-slot">
+                    <div>
+                        <h5>Commission Info</h5>
+                    </div>
+                    <div id="form-group">
+                        <Controller
+                            name="commType"
+                            control={control}
+                            rules={{
+                                required: "Please select a commission type",
+                            }}
+                            render={({
+                                field: { name, value, ref, onBlur, onChange },
+                                fieldState: { invalid, error },
+                            }) => (
+                                <Field.Root invalid={invalid} required>
+                                    <Select.Root
+                                        name={name}
+                                        collection={commTypes}
+                                        value={
+                                            commType
+                                                ? [commType]
+                                                : value
+                                                  ? [value]
+                                                  : []
+                                        }
+                                        onValueChange={(e) =>
+                                            onChange(e.value[0])
+                                        }
+                                        onInteractOutside={onBlur}
+                                    >
+                                        <Select.Label>
+                                            Commission Type
+                                            <Field.RequiredIndicator>
+                                                Required
+                                            </Field.RequiredIndicator>
+                                        </Select.Label>
+                                        <Select.Control>
+                                            <Select.Trigger ref={ref}>
+                                                <Select.ValueText placeholder="Select a Commission Type" />
+                                                <Select.Indicator>
+                                                    <CaretUpDownIcon />
+                                                </Select.Indicator>
+                                            </Select.Trigger>
+                                        </Select.Control>
+
+                                        <Select.Positioner>
+                                            <Select.Content>
+                                                {commTypes.items.map((item) => (
+                                                    <Select.Item
+                                                        key={item.value}
+                                                        item={item}
+                                                    >
+                                                        <Select.ItemText>
+                                                            {item.label}
+                                                        </Select.ItemText>
+                                                        <Select.ItemIndicator>
+                                                            <CheckIcon />
+                                                        </Select.ItemIndicator>
+                                                    </Select.Item>
+                                                ))}
+                                            </Select.Content>
+                                        </Select.Positioner>
+                                        <Select.HiddenSelect />
+                                    </Select.Root>
+                                    <Field.ErrorText>
+                                        {error?.message}
+                                    </Field.ErrorText>
+                                </Field.Root>
+                            )}
+                        />
+
+                        <Field.Root invalid={!!errors.idea} required>
+                            <Field.Label>Commission Idea</Field.Label>
+                            <Field.Textarea
+                                autoresize
+                                {...register("idea", {
+                                    required:
+                                        "Please provide the idea for your commission",
+                                })}
+                            />
+                            <Field.ErrorText>
+                                {errors.idea?.message}
+                            </Field.ErrorText>
+                        </Field.Root>
+
+                        <Field.Root invalid={!!errors.ref} required>
+                            <FileUpload.RootProvider value={fileUploadContext}>
+                                <FileUpload.Label>
+                                    Reference Sheet / Visual Depiction
+                                    <Field.RequiredIndicator>
+                                        Required
+                                    </Field.RequiredIndicator>
+                                </FileUpload.Label>
+                                <FileUpload.Dropzone
+                                    data-invalid={!!errors.ref ? "" : null}
+                                >
+                                    <div className="text-center text-sm [&>span]:block">
+                                        <span>
+                                            Drop your reference sheet here
+                                        </span>
+                                        <span className="mt-1">
+                                            Max. 5MB, max. 5 files, and only
+                                            png/jpeg
+                                        </span>
+                                    </div>
+                                    <FileUpload.Trigger asChild>
+                                        <Button>Browse Files</Button>
+                                    </FileUpload.Trigger>
+                                </FileUpload.Dropzone>
+
+                                <FileUpload.ItemGroup>
+                                    <FileUpload.Context>
+                                        {({ acceptedFiles }) =>
+                                            acceptedFiles.map((file) => (
+                                                <FileUpload.Item
+                                                    key={file.name}
+                                                    file={file}
+                                                >
+                                                    <FileUpload.ItemPreview type="image/*">
+                                                        <FileUpload.ItemPreviewImage />
+                                                    </FileUpload.ItemPreview>
+                                                    <FileUpload.ItemName />
+                                                    <FileUpload.ItemSizeText />
+                                                    <FileUpload.ItemDeleteTrigger>
+                                                        <XIcon />
+                                                    </FileUpload.ItemDeleteTrigger>
+                                                </FileUpload.Item>
+                                            ))
+                                        }
+                                    </FileUpload.Context>
+                                </FileUpload.ItemGroup>
+
+                                <FileUpload.ItemGroup>
+                                    <div
+                                        className="flex justify-end"
+                                        style={{
+                                            display: !!fileUploadContext
+                                                .rejectedFiles.length
+                                                ? "flex"
+                                                : "none",
+                                        }}
+                                    >
+                                        <button
+                                            className="cursor-pointer"
+                                            onClick={
+                                                fileUploadContext.clearRejectedFiles
+                                            }
+                                            type="button"
+                                        >
+                                            Clear all errors
+                                        </button>
+                                    </div>
+                                    <FileUpload.Context>
+                                        {({ rejectedFiles }) =>
+                                            rejectedFiles.map((rejected) => (
+                                                <FileUpload.Item
+                                                    key={rejected.file.name}
+                                                    file={rejected.file}
+                                                    data-variant="error"
+                                                >
+                                                    <FileUpload.ItemPreview type="image/*">
+                                                        <FileUpload.ItemPreviewImage />
+                                                    </FileUpload.ItemPreview>
+                                                    <FileUpload.ItemName />
+                                                    <FileUpload.ItemSizeText />
+                                                    <div className="text-error col-span-full mt-3">
+                                                        <strong>Errors</strong>
+                                                        <ul>
+                                                            {rejected.errors.map(
+                                                                (
+                                                                    error,
+                                                                    index
+                                                                ) => (
+                                                                    <li
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            fileUploadErrorMessage[
+                                                                                error
+                                                                            ]
+                                                                        }
+                                                                    </li>
+                                                                )
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                </FileUpload.Item>
+                                            ))
+                                        }
+                                    </FileUpload.Context>
+                                </FileUpload.ItemGroup>
+                                <FileUpload.ClearTrigger asChild>
+                                    <Button
+                                        color="var(--color-error)"
+                                        className="mt-6"
+                                        width="full"
+                                    >
+                                        Clear all files
+                                    </Button>
+                                </FileUpload.ClearTrigger>
+                                <FileUpload.HiddenInput
+                                    {...register("ref", {
+                                        required:
+                                            "Please provide at least one reference sheet",
+                                    })}
+                                />
+                            </FileUpload.RootProvider>
+                            <Field.ErrorText>
+                                {errors.ref?.message}
+                            </Field.ErrorText>
+                        </Field.Root>
+
+                        <Field.Root>
+                            <Field.Label>Additional Notes</Field.Label>
+                            <Field.Textarea autoresize {...register("notes")} />
+                        </Field.Root>
+                    </div>
+                </div>
+
+                <div id="form-slot">
+                    <div id="form-group" className="col-span-full!">
+                        <Controller
+                            name="tosAgreement"
+                            control={control}
+                            rules={{ required: "Please read and agree to ToS" }}
+                            render={({
+                                field: { name, ref, value, onBlur, onChange },
+                                fieldState: { invalid, error },
+                            }) => (
+                                <Field.Root
+                                    className="col-span-full mt-2"
+                                    invalid={invalid}
+                                    required
+                                >
+                                    <Checkbox.Root
+                                        name={name}
+                                        value={value}
+                                        onCheckedChange={(e) =>
+                                            onChange(e.checked)
+                                        }
+                                        onBlur={onBlur}
+                                    >
+                                        <Checkbox.Control ref={ref}>
+                                            <Checkbox.Indicator>
+                                                <CheckIcon />
+                                            </Checkbox.Indicator>
+                                        </Checkbox.Control>
+                                        <Checkbox.Label>
+                                            I have read and agreed to the Terms
+                                            of Service
+                                        </Checkbox.Label>
+                                        <Checkbox.HiddenInput />
+
+                                        <Field.ErrorText>
+                                            {error?.message}
+                                        </Field.ErrorText>
+                                    </Checkbox.Root>
+                                </Field.Root>
+                            )}
+                        />
+
+                        <Controller
+                            name="noReserveAgreement"
+                            control={control}
+                            rules={{
+                                required: "Please agree to this term",
+                            }}
+                            render={({
+                                field: { name, value, ref, onBlur, onChange },
+                                fieldState: { invalid, error },
+                            }) => (
+                                <Field.Root
+                                    className="col-span-full mt-2"
+                                    invalid={invalid}
+                                    required
+                                >
+                                    <Checkbox.Root
+                                        name={name}
+                                        value={value}
+                                        onCheckedChange={(e) =>
+                                            onChange(e.checked)
+                                        }
+                                        onBlur={onBlur}
+                                    >
+                                        <Checkbox.Control ref={ref}>
+                                            <Checkbox.Indicator>
+                                                <CheckIcon />
+                                            </Checkbox.Indicator>
+                                        </Checkbox.Control>
+                                        <Checkbox.Label>
+                                            I agree that this form is not a way
+                                            to reserve commission slot, and the
+                                            artist has all rights to accept or
+                                            decline it at their discretion
+                                        </Checkbox.Label>
+                                        <Checkbox.HiddenInput />
+
+                                        <Field.ErrorText className="basis-1">
+                                            {error?.message}
+                                        </Field.ErrorText>
+                                    </Checkbox.Root>
+                                </Field.Root>
+                            )}
+                        />
+
+                        <div className="col-span-full flex justify-end">
+                            <Button type="submit">Send</Button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </>
+    )
+}

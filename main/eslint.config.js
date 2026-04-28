@@ -28,6 +28,6 @@ export default defineConfig([
                 { component: true, html: true },
             ],
         },
-        ignores: [],
+        ignores: ["node_modules/**"],
     },
 ])

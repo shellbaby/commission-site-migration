@@ -1,29 +1,35 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import adonisjs from '@adonisjs/vite/client'
-import inertia from '@adonisjs/inertia/vite'
+import inertia from "@adonisjs/inertia/vite"
+import adonisjs from "@adonisjs/vite/client"
+import tailwindcss from "@tailwindcss/vite"
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
 
 export default defineConfig({
-  plugins: [
-    react(),
-    inertia({ ssr: { enabled: false, entrypoint: 'inertia/ssr.tsx' } }),
-    adonisjs({ entrypoints: ['inertia/app.tsx'], reload: ['resources/views/**/*.edge'] }),
-  ],
+    plugins: [
+        react(),
+        inertia({ ssr: { enabled: false, entrypoint: "inertia/ssr.tsx" } }),
+        adonisjs({
+            entrypoints: ["inertia/app.tsx"],
+            reload: ["resources/views/**/*.edge"],
+        }),
+        // @ts-expect-error
+        tailwindcss(),
+    ],
 
-  /**
-   * Define aliases for importing modules from
-   * your frontend code
-   */
-  resolve: {
-    alias: {
-      '~/': `${import.meta.dirname}/inertia/`,
-      '@generated': `${import.meta.dirname}/.adonisjs/client/`,
+    /**
+     * Define aliases for importing modules from
+     * your frontend code
+     */
+    resolve: {
+        alias: {
+            "~/": `${import.meta.dirname}/inertia/`,
+            "@generated": `${import.meta.dirname}/.adonisjs/client/`,
+        },
     },
-  },
 
-  server: {
-    watch: {
-      ignored: ['**/storage/**', '**/tmp/**'],
+    server: {
+        watch: {
+            ignored: ["**/storage/**", "**/tmp/**"],
+        },
     },
-  },
 })

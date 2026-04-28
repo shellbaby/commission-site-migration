@@ -1,0 +1,72 @@
+[data-scope="menu"] {
+    --background-color: var(--color-white);
+    --primary-color: var(--color-primary);
+
+    &[data-part="trigger"] {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--spacing) * 1);
+        cursor: pointer;
+        height: 100%;
+
+        &:focus {
+            outline: none;
+        }
+
+        &:focus-visible {
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &[data-part="content"] {
+        --arrow-size: calc(var(--spacing) * 3);
+
+        position: relative;
+        background: var(--background-color);
+        box-shadow: var(--shadow-default);
+        display: flex;
+        flex-direction: column;
+        border-radius: var(--radius-default);
+        border: 1px solid var(--primary-color);
+        padding: calc(var(--spacing) * 1);
+        z-index: 10;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &[data-part="arrow"] {
+        --arrow-background: var(--background-color);
+        --arrow-shadow-color: var(--primary-color);
+        z-index: -1;
+    }
+
+    &[data-part="arrow-tip"] {
+        border-top: 1px solid var(--primary-color);
+        border-left: 1px solid var(--primary-color);
+        border-bottom: 1px solid var(--background-color);
+        border-right: 1px solid var(--background-color);
+    }
+
+    &[data-part="item"] {
+        padding: calc(var(--spacing) * 3);
+        border-radius: calc(var(--spacing));
+        user-select: none;
+        cursor: pointer;
+
+        &:is(:hover, :focus-visible) {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
+}

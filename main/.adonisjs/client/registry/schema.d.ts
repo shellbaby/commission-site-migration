@@ -7,9 +7,189 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
-  'clients.store': {
+  'link.home': {
+    methods: ["GET","HEAD"]
+    pattern: '/'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.price': {
+    methods: ["GET","HEAD"]
+    pattern: '/price'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.tos': {
+    methods: ["GET","HEAD"]
+    pattern: '/tos'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.form': {
+    methods: ["GET","HEAD"]
+    pattern: '/form'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
+    }
+  }
+  'link.gallery': {
+    methods: ["GET","HEAD"]
+    pattern: '/gallery'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.contact': {
+    methods: ["GET","HEAD"]
+    pattern: '/contact'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.profile': {
+    methods: ["GET","HEAD"]
+    pattern: '/profile'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['edit']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['edit']>>>
+    }
+  }
+  'link.signin': {
+    methods: ["GET","HEAD"]
+    pattern: '/signin'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['create']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['create']>>>
+    }
+  }
+  'link.signin-alias': {
+    methods: ["GET","HEAD"]
+    pattern: '/sign-in'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.signout': {
+    methods: ["GET","HEAD"]
+    pattern: '/signout'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
+    }
+  }
+  'link.signout-alias': {
+    methods: ["GET","HEAD"]
+    pattern: '/sign-out'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.signup': {
+    methods: ["GET","HEAD"]
+    pattern: '/signup'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['create']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['create']>>>
+    }
+  }
+  'link.signup-alias': {
+    methods: ["GET","HEAD"]
+    pattern: '/sign-up'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'link.emails.verify': {
+    methods: ["GET","HEAD"]
+    pattern: '/verify/:uuid'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { uuid: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/email/emails_controller').default['verify']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/email/emails_controller').default['verify']>>>
+    }
+  }
+  'link.verify-instruction': {
+    methods: ["GET","HEAD"]
+    pattern: '/verify'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/email/emails_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/email/emails_controller').default['show']>>>
+    }
+  }
+  'client.clients.store': {
     methods: ["POST"]
-    pattern: '/v1/client'
+    pattern: '/api/v1/clients'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/client').signupValidator)>>
       paramsTuple: []
@@ -21,23 +201,23 @@ export interface Registry {
   }
   'client.clients.show': {
     methods: ["GET","HEAD"]
-    pattern: '/v1/client'
+    pattern: '/api/v1/clients/:id'
     types: {
       body: {}
-      paramsTuple: []
-      params: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['show']>>>
     }
   }
   'client.clients.update': {
-    methods: ["PATCH"]
-    pattern: '/v1/client'
+    methods: ["PUT","PATCH"]
+    pattern: '/api/v1/clients/:id'
     types: {
       body: {}
-      paramsTuple: []
-      params: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['update']>>>
@@ -45,50 +225,26 @@ export interface Registry {
   }
   'client.clients.destroy': {
     methods: ["DELETE"]
-    pattern: '/v1/client'
+    pattern: '/api/v1/clients/:id'
     types: {
       body: {}
-      paramsTuple: []
-      params: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['destroy']>>>
     }
   }
-  'auth.emails.verify': {
-    methods: ["GET","HEAD"]
-    pattern: '/v1/auth/verify/:uuid'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { uuid: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/email/emails_controller').default['verify']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/email/emails_controller').default['verify']>>>
-    }
-  }
   'auth.session.store': {
     methods: ["POST"]
-    pattern: '/v1/auth/signin'
+    pattern: '/api/v1/auth/signin'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/client').usernameValidator)>|InferInput<(typeof import('#validators/client').emailValidator)>|InferInput<(typeof import('#validators/client').passwordValidator)>>
+      body: ExtractBody<InferInput<(typeof import('#validators/client').signinValidator)>>
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/client').usernameValidator)>|InferInput<(typeof import('#validators/client').emailValidator)>|InferInput<(typeof import('#validators/client').passwordValidator)>>
+      query: ExtractQuery<InferInput<(typeof import('#validators/client').signinValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
-  'auth.session.destroy': {
-    methods: ["GET","HEAD"]
-    pattern: '/v1/auth/signout'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
     }
   }
 }

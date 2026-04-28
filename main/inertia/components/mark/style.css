@@ -1,0 +1,17 @@
+[data-scope="mark"] {
+    --border-radius: 0.25rem;
+    --color: var(--color-highlight);
+    --padding-inline: 0.25rem;
+    --padding-block: 0.25rem;
+    --margin-inline: 0.25rem;
+
+    &[data-part="root"] {
+        line-height: 2;
+        color: var(--color-white);
+        border-radius: var(--border-radius);
+        background: var(--color);
+        padding-inline: var(--padding-inline);
+        padding-block: var(--padding-block);
+        margin-inline: var(--margin-inline);
+    }
+}

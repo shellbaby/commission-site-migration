@@ -1,0 +1,74 @@
+[data-scope="toast"] {
+    &[data-part="root"] {
+        translate: var(--x) var(--y);
+        scale: var(--scale);
+        z-index: var(--z-index);
+        width: 100%;
+        min-width: calc(var(--spacing) * 102);
+        height: var(--height);
+        opacity: var(--opacity);
+        will-change: translate, opacity, scale;
+        transition:
+            translate 400ms,
+            scale 400ms,
+            opacity 400ms,
+            height 400ms,
+            box-shadow 200ms;
+        transition-timing-function: cubic-bezier(0.21, 1.02, 0.73, 1);
+
+        display: grid;
+        grid-template-areas: "title close" "description empty";
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: flex-start;
+        position: relative;
+        padding: calc(var(--spacing) * 3);
+
+        background-color: var(--color-white);
+        color: var(--color-black);
+        border: 2px solid var(--color-black-muted);
+    }
+
+    &[data-state="closed"] {
+        transition:
+            translate 400ms,
+            scale 400ms,
+            opacity 200ms;
+        transition-timing-function: cubic-bezier(0.06, 0.71, 0.55, 1);
+    }
+
+    &[data-type="success"] {
+        border-color: var(--color-success);
+        color: var(--color-success);
+        background-color: oklch(from var(--color-success) calc(l + 0.5) c h);
+    }
+
+    &[data-type="error"] {
+        border-color: var(--color-error);
+        color: var(--color-error);
+        background-color: oklch(from var(--color-error) calc(l + 0.5) c h);
+    }
+
+    &[data-part="title"] {
+        grid-area: title;
+        font-weight: bold;
+        display: flex;
+        gap: 3px;
+    }
+
+    &[data-part="close-trigger"] {
+        grid-area: close;
+        display: inline-flex;
+        align-items: start;
+        justify-content: flex-end;
+        cursor: pointer;
+        opacity: 0.6;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &[data-part="description"] {
+        grid-area: description;
+    }
+}

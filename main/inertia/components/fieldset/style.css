@@ -1,0 +1,5 @@
+[data-scope="fieldset"] {
+    &[data-part="legend"] {
+        font-weight: var(--font-weight-bold);
+    }
+}

@@ -1,0 +1,50 @@
+[data-scope="carousel"] {
+    &[data-part="root"] {
+        position: relative;
+    }
+
+    &[data-part="item-group"] {
+    }
+
+    &[data-part="item"] {
+    }
+
+    &[data-part="control"] {
+        color: var(--color-white);
+        display: flex;
+        gap: calc(var(--spacing) * 1);
+        padding: calc(var(--spacing) * 2);
+        background: var(--color-mulfok32-22);
+        position: absolute;
+        bottom: calc(var(--spacing) * 1);
+        left: 50%;
+        transform: translateX(-50%);
+        align-items: center;
+    }
+
+    &[data-part="prev-trigger"],
+    &[data-part="next-trigger"] {
+        &:is(:disabled) {
+            color: var(--color-black-muted);
+        }
+        cursor: pointer;
+    }
+
+    &[data-part="indicator-group"] {
+        display: flex;
+        gap: calc(var(--spacing) * 1);
+    }
+
+    &[data-part="indicator"] {
+        --indicator-size: calc(var(--spacing) * 2);
+        width: var(--indicator-size);
+        height: var(--indicator-size);
+        border-radius: calc(infinity * 1px);
+        background: var(--color-black-muted);
+        cursor: pointer;
+
+        &:is([data-current]) {
+            background: var(--color-mulfok32-5);
+        }
+    }
+}

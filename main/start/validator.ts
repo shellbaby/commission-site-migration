@@ -11,13 +11,20 @@
 |
 */
 
-import { DateTime } from 'luxon'
-import { VineDate } from '@vinejs/vine'
+import vine, { SimpleMessagesProvider, VineDate } from "@vinejs/vine"
+import { DateTime } from "luxon"
 
-declare module '@vinejs/vine/types' {
-  interface VineGlobalTransforms {
-    date: DateTime
-  }
+declare module "@vinejs/vine/types" {
+    interface VineGlobalTransforms {
+        date: DateTime
+    }
 }
 
 VineDate.transform((value) => DateTime.fromJSDate(value))
+
+vine.messagesProvider = new SimpleMessagesProvider({
+    email: "Must be a valid email address",
+
+    "password.regex": "Password is not secure enough",
+    "password_confirmation.confirmed": "Passwords do not match",
+})

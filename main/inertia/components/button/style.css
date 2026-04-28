@@ -1,0 +1,35 @@
+[data-scope="button"] {
+    --height: 40px;
+    --padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+    --color: var(--color-primary);
+    --width: auto;
+
+    &[data-part="root"] {
+        height: var(--height);
+        width: var(--width);
+        border: 2px solid var(--color);
+        border-radius: var(--radius-default);
+        padding: var(--padding);
+        cursor: pointer;
+        color: var(--color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+
+        &:not(:disabled):is(:hover, :focus-visible) {
+            background: var(--color);
+            color: var(--color-white);
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            border-color: oklch(from var(--color) l c h / 0.5);
+            color: oklch(from var(--color) l c h / 0.5);
+        }
+    }
+}

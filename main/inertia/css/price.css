@@ -1,0 +1,24 @@
+#commission-item {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-block: calc(var(--spacing) * 12);
+
+    #section-carousel {
+        width: 256px;
+        place-self: center;
+    }
+}
+
+#commission-price {
+    margin-top: calc(var(--spacing) * 1);
+    font-size: var(--text-h3);
+}
+
+#commission-description {
+    margin-top: calc(var(--spacing) * 3);
+}
+
+#commission-request {
+    grid-column: span 2 / span 2;
+    margin-top: calc(var(--spacing) * 9);
+}
