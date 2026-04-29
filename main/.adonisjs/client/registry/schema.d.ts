@@ -43,18 +43,6 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.form': {
-    methods: ["GET","HEAD"]
-    pattern: '/form'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
-    }
-  }
   'link.gallery': {
     methods: ["GET","HEAD"]
     pattern: '/gallery'
@@ -77,6 +65,18 @@ export interface Registry {
       query: {}
       response: unknown
       errorResponse: unknown
+    }
+  }
+  'link.form': {
+    methods: ["GET","HEAD"]
+    pattern: '/form'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
     }
   }
   'link.profile': {
@@ -233,6 +233,54 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['destroy']>>>
+    }
+  }
+  'client.commissions.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/commissions'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
+    }
+  }
+  'client.commissions.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/commissions'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['store']>>>
+    }
+  }
+  'client.commissions.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/commissions/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
+    }
+  }
+  'client.commissions.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/commissions/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['destroy']>>>
     }
   }
   'auth.session.store': {

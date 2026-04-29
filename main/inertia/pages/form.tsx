@@ -1,7 +1,7 @@
-import { Head } from "@inertiajs/react"
+import { Head, useForm } from "@inertiajs/react"
 import { CaretUpDownIcon, CheckIcon, XIcon } from "@phosphor-icons/react"
 import { type CommissionType } from "@shellbaby/shared/types"
-import { Controller, useForm } from "react-hook-form"
+import React from "react"
 import {
     Button,
     Checkbox,
@@ -18,91 +18,108 @@ import { InertiaProps } from "~/types"
 
 type PageProps = InertiaProps<{ commType: CommissionType | undefined }>
 
-export default function Page({ commType }: PageProps) {
-    const commTypes = createListCollection<{
-        label: string
-        value: CommissionType
-    }>({
-        items: [
-            { label: "Emote ($15)", value: "emote" },
-            { label: "Half Body ($25)", value: "half-body" },
-            { label: "Full Body ($35)", value: "full-body" },
-            {
-                label: "Reference Sheet ($75)",
-                value: "ref-sheet",
-            },
-        ],
-    })
+const commTypes = createListCollection<{
+    label: string
+    value: CommissionType
+}>({
+    items: [
+        { label: "Emote ($15)", value: "emote" },
+        { label: "Half Body ($25)", value: "half-body" },
+        { label: "Full Body ($35)", value: "full-body" },
+        {
+            label: "Reference Sheet ($75)",
+            value: "ref-sheet",
+        },
+    ],
+})
 
+const fileUploadErrorMessage: Record<FileUploadFileError, string> = {
+    FILE_EXISTS: "File already exists",
+    FILE_TOO_LARGE: "File size is too large (max. 5MB)",
+    TOO_MANY_FILES: "Maximum 5 files are allowed",
+    FILE_INVALID: "",
+    FILE_INVALID_TYPE: "",
+    FILE_TOO_SMALL: "",
+    REQUIRED: "Please provide at least one reference sheet",
+}
+
+const _MAX_FILE_SIZE = 1024 * 1024 * 5
+
+const fileUploadValidate = (
+    file: File,
+    details: FileUpload.FileValidateDetails
+): FileUpload.FileError[] | null => {
+    if (
+        details.acceptedFiles.find(
+            (acceptFile) => acceptFile.name === file.name
+        )
+    ) {
+        return ["FILE_EXISTS"]
+    }
+
+    if (details.acceptedFiles.length >= 5) {
+        return ["TOO_MANY_FILES"]
+    }
+
+    if (file.size > _MAX_FILE_SIZE) {
+        return ["FILE_TOO_LARGE"]
+    }
+
+    return null
+}
+
+export default function Page({ commType, client }: PageProps) {
     interface FormValues {
         name: string
         email: string
-        telegram: string
-        discord: string
-        commType: CommissionType
+        // telegram: string
+        // discord: string
+        commission_type: CommissionType | undefined
         idea: string
-        ref: FileList
+        ref_sheets: File[]
         notes: string
-        tosAgreement?: string
-        noReserveAgreement?: string
+        tos_agreement?: string
+        no_reserve_agreement?: string
     }
 
     const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        control,
+        errors,
+        processing,
+        wasSuccessful,
+        progress,
+        setData,
+        isDirty,
+        post,
+        data,
     } = useForm<FormValues>({
-        defaultValues: {
-            commType,
-        },
+        name: client?.name ?? "",
+        email: client?.email ?? "",
+        commission_type: undefined,
+        idea: "",
+        notes: "",
+        tos_agreement: "",
+        no_reserve_agreement: "",
+        ref_sheets: [],
     })
 
-    const formOnSubmit = handleSubmit((data: FormValues) => {
-        console.log(data)
-    })
-
-    const fileUploadErrorMessage: Record<FileUploadFileError, string> = {
-        FILE_EXISTS: "File already exists",
-        FILE_TOO_LARGE: "File size is too large (max. 5MB)",
-        TOO_MANY_FILES: "Maximum 5 files are allowed",
-        FILE_INVALID: "",
-        FILE_INVALID_TYPE: "",
-        FILE_TOO_SMALL: "",
-        REQUIRED: "Please provide at least one reference sheet",
-    }
-
-    const _MAX_FILE_SIZE = 1024 * 1024 * 5
-    const fileUploadValidate = (
-        file: File,
-        details: FileUpload.FileValidateDetails
-    ): FileUpload.FileError[] | null => {
-        console.log("file validate run")
-        if (
-            details.acceptedFiles.find(
-                (acceptFile) => acceptFile.name === file.name
-            )
-        ) {
-            return ["FILE_EXISTS"]
-        }
-
-        if (details.acceptedFiles.length >= 5) {
-            return ["TOO_MANY_FILES"]
-        }
-
-        if (file.size > _MAX_FILE_SIZE) {
-            return ["FILE_TOO_LARGE"]
-        }
-
-        return null
+    const handleFileAccept = (
+        acceptedDetails: FileUpload.FileAcceptDetails
+    ) => {
+        setData("ref_sheets", acceptedDetails.files)
     }
 
     const fileUploadContext = useFileUpload({
-        validate: fileUploadValidate,
+        // validate: fileUploadValidate,
         maxFiles: 5,
         maxFileSize: _MAX_FILE_SIZE,
         accept: "image/png,image/jpeg",
+        onFileAccept: handleFileAccept,
     })
+
+    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        post("/api/v1/commissions")
+    }
 
     return (
         <>
@@ -110,8 +127,7 @@ export default function Page({ commType }: PageProps) {
             <h2 className="mb-12 text-center">Commission Form</h2>
             <form
                 className="rounded-default border-separator border-2 p-9"
-                onSubmit={formOnSubmit}
-                noValidate
+                onSubmit={handleSubmit}
             >
                 <div id="form-slot">
                     <div>
@@ -122,19 +138,13 @@ export default function Page({ commType }: PageProps) {
                             <Field.Label>Your name</Field.Label>
                             <Field.Input
                                 placeholder="Name / Nickname"
-                                {...register("name", {
-                                    required:
-                                        "Please fill out your name/nickname",
-                                    pattern: {
-                                        value: /^[a-zA-Z0-9\s]{1,30}$/,
-                                        message:
-                                            "Only alphanumerical characters are allowed, max. 30 characters",
-                                    },
-                                })}
+                                name="name"
+                                defaultValue={data.name}
+                                onChange={(e) =>
+                                    setData("name", e.target.value)
+                                }
                             />
-                            <Field.ErrorText>
-                                {errors.name?.message}
-                            </Field.ErrorText>
+                            <Field.ErrorText>{errors.name}</Field.ErrorText>
                             <Field.HelperText asChild>
                                 <ul className="[&>li]:mt-0!">
                                     <li>Alphanumerical characters only</li>
@@ -148,13 +158,13 @@ export default function Page({ commType }: PageProps) {
                             <Field.Input
                                 type="email"
                                 placeholder="your@email.com"
-                                {...register("email", {
-                                    required: "Please fill out your email",
-                                })}
+                                name="email"
+                                onChange={(e) =>
+                                    setData("email", e.target.value)
+                                }
+                                defaultValue={data.email}
                             />
-                            <Field.ErrorText>
-                                {errors.email?.message}
-                            </Field.ErrorText>
+                            <Field.ErrorText>{errors.email}</Field.ErrorText>
                         </Field.Root>
 
                         <Fieldset.Root>
@@ -164,7 +174,6 @@ export default function Page({ commType }: PageProps) {
                                     <Field.Input
                                         addon="Telegram"
                                         placeholder="t.me/username"
-                                        {...register("telegram")}
                                     />
                                 </Field.Root>
 
@@ -172,7 +181,6 @@ export default function Page({ commType }: PageProps) {
                                     <Field.Input
                                         addon="Discord"
                                         placeholder="Username"
-                                        {...register("discord")}
                                     />
                                 </Field.Root>
                             </div>
@@ -185,88 +193,71 @@ export default function Page({ commType }: PageProps) {
                         <h5>Commission Info</h5>
                     </div>
                     <div id="form-group">
-                        <Controller
-                            name="commType"
-                            control={control}
-                            rules={{
-                                required: "Please select a commission type",
-                            }}
-                            render={({
-                                field: { name, value, ref, onBlur, onChange },
-                                fieldState: { invalid, error },
-                            }) => (
-                                <Field.Root invalid={invalid} required>
-                                    <Select.Root
-                                        name={name}
-                                        collection={commTypes}
-                                        value={
-                                            commType
-                                                ? [commType]
-                                                : value
-                                                  ? [value]
-                                                  : []
-                                        }
-                                        onValueChange={(e) =>
-                                            onChange(e.value[0])
-                                        }
-                                        onInteractOutside={onBlur}
-                                    >
-                                        <Select.Label>
-                                            Commission Type
-                                            <Field.RequiredIndicator>
-                                                Required
-                                            </Field.RequiredIndicator>
-                                        </Select.Label>
-                                        <Select.Control>
-                                            <Select.Trigger ref={ref}>
-                                                <Select.ValueText placeholder="Select a Commission Type" />
-                                                <Select.Indicator>
-                                                    <CaretUpDownIcon />
-                                                </Select.Indicator>
-                                            </Select.Trigger>
-                                        </Select.Control>
+                        <Field.Root invalid={!!errors.commission_type} required>
+                            <Select.Root
+                                name={"commission_type"}
+                                collection={commTypes}
+                                defaultValue={[commType ?? ""]}
+                            >
+                                <Select.Label>
+                                    Commission Type
+                                    <Field.RequiredIndicator>
+                                        Required
+                                    </Field.RequiredIndicator>
+                                </Select.Label>
+                                <Select.Control>
+                                    <Select.Trigger>
+                                        <Select.ValueText placeholder="Select a Commission Type" />
+                                        <Select.Indicator>
+                                            <CaretUpDownIcon />
+                                        </Select.Indicator>
+                                    </Select.Trigger>
+                                </Select.Control>
 
-                                        <Select.Positioner>
-                                            <Select.Content>
-                                                {commTypes.items.map((item) => (
-                                                    <Select.Item
-                                                        key={item.value}
-                                                        item={item}
-                                                    >
-                                                        <Select.ItemText>
-                                                            {item.label}
-                                                        </Select.ItemText>
-                                                        <Select.ItemIndicator>
-                                                            <CheckIcon />
-                                                        </Select.ItemIndicator>
-                                                    </Select.Item>
-                                                ))}
-                                            </Select.Content>
-                                        </Select.Positioner>
-                                        <Select.HiddenSelect />
-                                    </Select.Root>
-                                    <Field.ErrorText>
-                                        {error?.message}
-                                    </Field.ErrorText>
-                                </Field.Root>
-                            )}
-                        />
+                                <Select.Positioner>
+                                    <Select.Content>
+                                        {commTypes.items.map((item) => (
+                                            <Select.Item
+                                                key={item.value}
+                                                item={item}
+                                            >
+                                                <Select.ItemText>
+                                                    {item.label}
+                                                </Select.ItemText>
+                                                <Select.ItemIndicator>
+                                                    <CheckIcon />
+                                                </Select.ItemIndicator>
+                                            </Select.Item>
+                                        ))}
+                                    </Select.Content>
+                                </Select.Positioner>
+                                <Select.HiddenSelect
+                                    onChange={(e) =>
+                                        setData(
+                                            "commission_type",
+                                            e.target.value as CommissionType
+                                        )
+                                    }
+                                />
+                            </Select.Root>
+                            <Field.ErrorText>
+                                {errors.commission_type}
+                            </Field.ErrorText>
+                        </Field.Root>
 
                         <Field.Root invalid={!!errors.idea} required>
                             <Field.Label>Commission Idea</Field.Label>
                             <Field.Textarea
                                 autoresize
-                                {...register("idea", {
-                                    required:
-                                        "Please provide the idea for your commission",
-                                })}
+                                name="idea"
+                                onChange={(e) =>
+                                    setData("idea", e.target.value)
+                                }
                             />
-                            <Field.ErrorText>
-                                {errors.idea?.message}
-                            </Field.ErrorText>
+                            <Field.ErrorText>{errors.idea}</Field.ErrorText>
                         </Field.Root>
 
-                        <Field.Root invalid={!!errors.ref} required>
+                        <Field.Root invalid={!!errors.ref_sheets} required>
                             <FileUpload.RootProvider value={fileUploadContext}>
                                 <FileUpload.Label>
                                     Reference Sheet / Visual Depiction
@@ -275,7 +266,9 @@ export default function Page({ commType }: PageProps) {
                                     </Field.RequiredIndicator>
                                 </FileUpload.Label>
                                 <FileUpload.Dropzone
-                                    data-invalid={!!errors.ref ? "" : null}
+                                    data-invalid={
+                                        !!errors.ref_sheets ? "" : null
+                                    }
                                 >
                                     <div className="text-center text-sm [&>span]:block">
                                         <span>
@@ -383,113 +376,92 @@ export default function Page({ commType }: PageProps) {
                                         Clear all files
                                     </Button>
                                 </FileUpload.ClearTrigger>
-                                <FileUpload.HiddenInput
-                                    {...register("ref", {
-                                        required:
-                                            "Please provide at least one reference sheet",
-                                    })}
-                                />
+                                <FileUpload.HiddenInput name="ref_sheets" />
                             </FileUpload.RootProvider>
                             <Field.ErrorText>
-                                {errors.ref?.message}
+                                {errors.ref_sheets}
                             </Field.ErrorText>
                         </Field.Root>
 
                         <Field.Root>
                             <Field.Label>Additional Notes</Field.Label>
-                            <Field.Textarea autoresize {...register("notes")} />
+                            <Field.Textarea autoresize name="notes" />
                         </Field.Root>
                     </div>
                 </div>
 
                 <div id="form-slot">
                     <div id="form-group" className="col-span-full!">
-                        <Controller
-                            name="tosAgreement"
-                            control={control}
-                            rules={{ required: "Please read and agree to ToS" }}
-                            render={({
-                                field: { name, ref, value, onBlur, onChange },
-                                fieldState: { invalid, error },
-                            }) => (
-                                <Field.Root
-                                    className="col-span-full mt-2"
-                                    invalid={invalid}
-                                    required
-                                >
-                                    <Checkbox.Root
-                                        name={name}
-                                        value={value}
-                                        onCheckedChange={(e) =>
-                                            onChange(e.checked)
-                                        }
-                                        onBlur={onBlur}
-                                    >
-                                        <Checkbox.Control ref={ref}>
-                                            <Checkbox.Indicator>
-                                                <CheckIcon />
-                                            </Checkbox.Indicator>
-                                        </Checkbox.Control>
-                                        <Checkbox.Label>
-                                            I have read and agreed to the Terms
-                                            of Service
-                                        </Checkbox.Label>
-                                        <Checkbox.HiddenInput />
+                        <Field.Root
+                            className="col-span-full mt-2"
+                            invalid={!!errors.tos_agreement}
+                            required
+                        >
+                            <Checkbox.Root name={"tos_agreement"}>
+                                <Checkbox.Control>
+                                    <Checkbox.Indicator>
+                                        <CheckIcon />
+                                    </Checkbox.Indicator>
+                                </Checkbox.Control>
+                                <Checkbox.Label>
+                                    I have read and agreed to the Terms of
+                                    Service
+                                </Checkbox.Label>
+                                <Checkbox.HiddenInput
+                                    onChange={(e) =>
+                                        setData("tos_agreement", e.target.value)
+                                    }
+                                />
 
-                                        <Field.ErrorText>
-                                            {error?.message}
-                                        </Field.ErrorText>
-                                    </Checkbox.Root>
-                                </Field.Root>
-                            )}
-                        />
+                                <Field.ErrorText>
+                                    {errors.tos_agreement}
+                                </Field.ErrorText>
+                            </Checkbox.Root>
+                        </Field.Root>
 
-                        <Controller
-                            name="noReserveAgreement"
-                            control={control}
-                            rules={{
-                                required: "Please agree to this term",
-                            }}
-                            render={({
-                                field: { name, value, ref, onBlur, onChange },
-                                fieldState: { invalid, error },
-                            }) => (
-                                <Field.Root
-                                    className="col-span-full mt-2"
-                                    invalid={invalid}
-                                    required
-                                >
-                                    <Checkbox.Root
-                                        name={name}
-                                        value={value}
-                                        onCheckedChange={(e) =>
-                                            onChange(e.checked)
-                                        }
-                                        onBlur={onBlur}
-                                    >
-                                        <Checkbox.Control ref={ref}>
-                                            <Checkbox.Indicator>
-                                                <CheckIcon />
-                                            </Checkbox.Indicator>
-                                        </Checkbox.Control>
-                                        <Checkbox.Label>
-                                            I agree that this form is not a way
-                                            to reserve commission slot, and the
-                                            artist has all rights to accept or
-                                            decline it at their discretion
-                                        </Checkbox.Label>
-                                        <Checkbox.HiddenInput />
+                        <Field.Root
+                            className="col-span-full mt-2"
+                            invalid={!!errors.no_reserve_agreement}
+                            required
+                        >
+                            <Checkbox.Root name={"no_reserve_agreement"}>
+                                <Checkbox.Control>
+                                    <Checkbox.Indicator>
+                                        <CheckIcon />
+                                    </Checkbox.Indicator>
+                                </Checkbox.Control>
+                                <Checkbox.Label>
+                                    I agree that this form is not a way to
+                                    reserve commission slot, and the artist has
+                                    all rights to accept or decline it at their
+                                    discretion
+                                </Checkbox.Label>
+                                <Checkbox.HiddenInput
+                                    onChange={(e) =>
+                                        setData(
+                                            "no_reserve_agreement",
+                                            e.target.value
+                                        )
+                                    }
+                                />
 
-                                        <Field.ErrorText className="basis-1">
-                                            {error?.message}
-                                        </Field.ErrorText>
-                                    </Checkbox.Root>
-                                </Field.Root>
-                            )}
-                        />
+                                <Field.ErrorText className="basis-1">
+                                    {errors.no_reserve_agreement}
+                                </Field.ErrorText>
+                            </Checkbox.Root>
+                        </Field.Root>
 
                         <div className="col-span-full flex justify-end">
-                            <Button type="submit">Send</Button>
+                            <Button
+                                type="submit"
+                                disabled={processing || !isDirty}
+                            >
+                                {processing
+                                    ? wasSuccessful
+                                        ? "Success!"
+                                        : "Sending..."
+                                    : "Send"}
+                            </Button>
                         </div>
                     </div>
                 </div>

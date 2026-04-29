@@ -17,11 +17,13 @@ router
         router.on("/").renderInertia("home", {}).as("home")
         router.on("/price").renderInertia("price", {}).as("price")
         router.on("/tos").renderInertia("tos", {}).as("tos")
+        router.on("/gallery").renderInertia("gallery", {}).as("gallery")
+        router.on("/contact").renderInertia("contact", {}).as("contact")
+
+        // Commission links //
         router
             .get("/form", [controllers.commission.Commissions, "create"])
             .as("form")
-        router.on("/gallery").renderInertia("gallery", {}).as("gallery")
-        router.on("/contact").renderInertia("contact", {}).as("contact")
 
         // Client-specific links //
         router
@@ -76,6 +78,10 @@ router
                     .resource("clients", controllers.client.Clients)
                     .use(["destroy", "show", "update"], middleware.auth())
                     .except(["create", "edit", "index"])
+
+                router
+                    .resource("commissions", controllers.commission.Commissions)
+                    .except(["create", "edit", "update"])
             })
             .as("client")
 

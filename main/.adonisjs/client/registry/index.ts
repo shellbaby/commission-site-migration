@@ -24,12 +24,6 @@ const routes = {
     tokens: [{"old":"/tos","type":0,"val":"tos","end":""}],
     types: placeholder as Registry['link.tos']['types'],
   },
-  'link.form': {
-    methods: ["GET","HEAD"],
-    pattern: '/form',
-    tokens: [{"old":"/form","type":0,"val":"form","end":""}],
-    types: placeholder as Registry['link.form']['types'],
-  },
   'link.gallery': {
     methods: ["GET","HEAD"],
     pattern: '/gallery',
@@ -41,6 +35,12 @@ const routes = {
     pattern: '/contact',
     tokens: [{"old":"/contact","type":0,"val":"contact","end":""}],
     types: placeholder as Registry['link.contact']['types'],
+  },
+  'link.form': {
+    methods: ["GET","HEAD"],
+    pattern: '/form',
+    tokens: [{"old":"/form","type":0,"val":"form","end":""}],
+    types: placeholder as Registry['link.form']['types'],
   },
   'link.profile': {
     methods: ["GET","HEAD"],
@@ -119,6 +119,30 @@ const routes = {
     pattern: '/api/v1/clients/:id',
     tokens: [{"old":"/api/v1/clients/:id","type":0,"val":"api","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"clients","end":""},{"old":"/api/v1/clients/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['client.clients.destroy']['types'],
+  },
+  'client.commissions.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/commissions',
+    tokens: [{"old":"/api/v1/commissions","type":0,"val":"api","end":""},{"old":"/api/v1/commissions","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions","type":0,"val":"commissions","end":""}],
+    types: placeholder as Registry['client.commissions.index']['types'],
+  },
+  'client.commissions.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/commissions',
+    tokens: [{"old":"/api/v1/commissions","type":0,"val":"api","end":""},{"old":"/api/v1/commissions","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions","type":0,"val":"commissions","end":""}],
+    types: placeholder as Registry['client.commissions.store']['types'],
+  },
+  'client.commissions.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/commissions/:id',
+    tokens: [{"old":"/api/v1/commissions/:id","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['client.commissions.show']['types'],
+  },
+  'client.commissions.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/commissions/:id',
+    tokens: [{"old":"/api/v1/commissions/:id","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['client.commissions.destroy']['types'],
   },
   'auth.session.store': {
     methods: ["POST"],

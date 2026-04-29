@@ -6,9 +6,9 @@ export interface ApiDefinition {
     home: typeof routes['link.home']
     price: typeof routes['link.price']
     tos: typeof routes['link.tos']
-    form: typeof routes['link.form']
     gallery: typeof routes['link.gallery']
     contact: typeof routes['link.contact']
+    form: typeof routes['link.form']
     profile: typeof routes['link.profile']
     signin: typeof routes['link.signin']
     signinAlias: typeof routes['link.signin-alias']
@@ -27,6 +27,12 @@ export interface ApiDefinition {
       show: typeof routes['client.clients.show']
       update: typeof routes['client.clients.update']
       destroy: typeof routes['client.clients.destroy']
+    }
+    commissions: {
+      index: typeof routes['client.commissions.index']
+      store: typeof routes['client.commissions.store']
+      show: typeof routes['client.commissions.show']
+      destroy: typeof routes['client.commissions.destroy']
     }
   }
   auth: {

@@ -22,7 +22,9 @@ export default class CommissionsController {
     /**
      * Handle form submission for the create action
      */
-    async store({ request }: HttpContext) {}
+    async store({ request }: HttpContext) {
+        console.log(request.body())
+    }
 
     /**
      * Show individual record

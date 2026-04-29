@@ -1,5 +1,5 @@
 import { BaseSchema } from "@adonisjs/lucid/schema"
-import { CommissionStatus, CommissionType } from "../../shared/types.ts"
+import { CommissionStatus, CommissionType } from "@shellbaby/shared/types"
 
 export default class extends BaseSchema {
     protected tableName = "commissions"
@@ -33,7 +33,7 @@ export default class extends BaseSchema {
                 .notNullable()
             table.text("idea").notNullable()
             table.string("ref_sheet", 255).notNullable()
-            table.text("notes", "mediumtext")
+            table.text("notes")
             table
                 .enum("status", CommissionStatus, {
                     useNative: true,
