@@ -41,18 +41,14 @@ export default class ClientsController {
             }
         )
 
-        try {
-            await mail.send((msg) => {
-                msg.to(payload.email)
-                    .subject("Verify Your Account")
-                    .htmlView("email/verify", {
-                        client,
-                        url: signedURL,
-                    })
-            })
-        } catch (error) {
-            console.error(error)
-        }
+        await mail.send((msg) => {
+            msg.to(payload.email)
+                .subject("Verify Your Account")
+                .htmlView("email/verify", {
+                    client,
+                    url: signedURL,
+                })
+        })
 
         response.encryptedCookie(
             "signup_status",

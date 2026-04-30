@@ -109,7 +109,6 @@ export default function Page({ commType, client }: PageProps) {
     }
 
     const fileUploadContext = useFileUpload({
-        // validate: fileUploadValidate,
         maxFiles: 5,
         maxFileSize: _MAX_FILE_SIZE,
         accept: "image/png,image/jpeg",
@@ -376,7 +375,7 @@ export default function Page({ commType, client }: PageProps) {
                                         Clear all files
                                     </Button>
                                 </FileUpload.ClearTrigger>
-                                <FileUpload.HiddenInput name="ref_sheets" />
+                                <FileUpload.HiddenInput name="ref_sheets[]" />
                             </FileUpload.RootProvider>
                             <Field.ErrorText>
                                 {errors.ref_sheets}

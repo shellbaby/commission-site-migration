@@ -18,12 +18,14 @@ export default class extends BaseSchema {
                 .references("client_uuid")
                 .inTable("clients")
                 .onDelete("CASCADE")
-                .notNullable()
+                .nullable()
                 .index()
             table.timestamp("created_at", { useTz: true }).notNullable()
             table.timestamp("updated_at", { useTz: true }).nullable()
 
             // From frontend //
+            table.string("email", 255).notNullable()
+            table.string("name", 255).notNullable()
             table
                 .enum("type", CommissionType, {
                     useNative: true,
@@ -32,8 +34,8 @@ export default class extends BaseSchema {
                 })
                 .notNullable()
             table.text("idea").notNullable()
-            table.string("ref_sheet", 255).notNullable()
-            table.text("notes")
+            table.jsonb("ref_sheets").notNullable()
+            table.text("notes").nullable()
             table
                 .enum("status", CommissionStatus, {
                     useNative: true,
@@ -41,6 +43,8 @@ export default class extends BaseSchema {
                     existingType: false,
                 })
                 .defaultTo("pending")
+            table.boolean("tos_agreement").notNullable()
+            table.boolean("no_reserve_agreement").notNullable()
         })
     }
 

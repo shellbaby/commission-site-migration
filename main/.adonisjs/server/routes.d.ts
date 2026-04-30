@@ -4,6 +4,7 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
+    'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
     'link.home': { paramsTuple?: []; params?: {} }
     'link.price': { paramsTuple?: []; params?: {} }
     'link.tos': { paramsTuple?: []; params?: {} }
@@ -30,6 +31,7 @@ export type ScannedRoutes = {
     'auth.session.store': { paramsTuple?: []; params?: {} }
   }
   GET: {
+    'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
     'link.home': { paramsTuple?: []; params?: {} }
     'link.price': { paramsTuple?: []; params?: {} }
     'link.tos': { paramsTuple?: []; params?: {} }
@@ -50,6 +52,7 @@ export type ScannedRoutes = {
     'client.commissions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
+    'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
     'link.home': { paramsTuple?: []; params?: {} }
     'link.price': { paramsTuple?: []; params?: {} }
     'link.tos': { paramsTuple?: []; params?: {} }

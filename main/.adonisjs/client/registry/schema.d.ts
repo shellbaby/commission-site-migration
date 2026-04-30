@@ -7,6 +7,18 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
+  'drive.fs.serve': {
+    methods: ["GET","HEAD"]
+    pattern: '/uploads/*'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { '*': ParamValue[] }
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'link.home': {
     methods: ["GET","HEAD"]
     pattern: '/'
@@ -251,12 +263,12 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/api/v1/commissions'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/commission').commissionValidator)>>
       paramsTuple: []
       params: {}
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/commission').commissionValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'client.commissions.show': {
