@@ -78,7 +78,12 @@ export const Navigation = ({ client }: ComponentProps) => {
                                 </Menu.Arrow>
                                 <Menu.Item value="profile" asChild>
                                     <Link route="link.profile">
-                                        your profile
+                                        my profile
+                                    </Link>
+                                </Menu.Item>
+                                <Menu.Item value="commissions" asChild>
+                                    <Link route="link.commissions">
+                                        my commissions
                                     </Link>
                                 </Menu.Item>
                                 <Menu.Item value="sign-out" asChild>

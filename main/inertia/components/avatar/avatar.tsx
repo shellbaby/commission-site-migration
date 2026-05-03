@@ -1,4 +1,5 @@
 import { Avatar as ArkAvatar, useAvatarContext } from "@ark-ui/react/avatar"
+import "./style.css"
 
 type ImageProps = ArkAvatar.ImageProps
 export const Fallback = (props: ImageProps) => {

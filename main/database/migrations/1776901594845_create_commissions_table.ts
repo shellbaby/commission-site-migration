@@ -12,7 +12,7 @@ export default class extends BaseSchema {
             table.increments("id").primary().unique()
 
             // Generate at backend //
-            table.uuid("commission_uuid").notNullable()
+            table.string("commission_number").notNullable().unique()
             table
                 .uuid("client_uuid")
                 .references("client_uuid")

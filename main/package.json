@@ -42,6 +42,7 @@
         "@adonisjs/prettier-config": "^1.4.5",
         "@adonisjs/tsconfig": "^2.0.0",
         "@ark-ui/react": "^5.36.2",
+        "@faker-js/faker": "^10.4.0",
         "@japa/assert": "^4.2.0",
         "@japa/browser-client": "^2.3.0",
         "@japa/plugin-adonisjs": "^5.2.0",

@@ -1,5 +1,6 @@
 import { PasswordInput as ArkPasswordInput } from "@ark-ui/react/password-input"
 import { IconContext } from "@phosphor-icons/react"
+import "./style.css"
 
 type VisibilityTriggerProps = ArkPasswordInput.VisibilityTriggerProps
 const VisibilityTrigger = (props: VisibilityTriggerProps) => {

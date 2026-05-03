@@ -33,12 +33,12 @@ export class ClientSchema extends BaseModel {
 }
 
 export class CommissionSchema extends BaseModel {
-  static $columns = ['clientUuid', 'commissionUuid', 'createdAt', 'email', 'id', 'idea', 'name', 'noReserveAgreement', 'notes', 'refSheets', 'status', 'tosAgreement', 'type', 'updatedAt'] as const
+  static $columns = ['clientUuid', 'commissionNumber', 'createdAt', 'email', 'id', 'idea', 'name', 'noReserveAgreement', 'notes', 'refSheets', 'status', 'tosAgreement', 'type', 'updatedAt'] as const
   $columns = CommissionSchema.$columns
   @column()
   declare clientUuid: string | null
   @column()
-  declare commissionUuid: string
+  declare commissionNumber: string
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()

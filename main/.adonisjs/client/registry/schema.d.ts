@@ -91,6 +91,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
     }
   }
+  'link.commission-details': {
+    methods: ["GET","HEAD"]
+    pattern: '/commission-details/:commission_uuid'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { commission_uuid: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
+    }
+  }
   'link.profile': {
     methods: ["GET","HEAD"]
     pattern: '/profile'
@@ -101,6 +113,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['edit']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['edit']>>>
+    }
+  }
+  'link.commissions': {
+    methods: ["GET","HEAD"]
+    pattern: '/commissions'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
     }
   }
   'link.signin': {

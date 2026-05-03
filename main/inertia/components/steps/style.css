@@ -1,0 +1,55 @@
+[data-scope="steps"] {
+    /* [da] */
+
+    &[data-part="list"] {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &[data-part="indicator"] {
+        --size: calc(var(--spacing) * 9);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--color);
+        color: var(--color);
+        border-radius: 9999px;
+        padding: calc(var(--spacing) * 1);
+        height: var(--size);
+        width: var(--size);
+
+        &[data-current] {
+            background-color: oklch(from var(--color) l c h / 0.3);
+        }
+
+        &[data-complete] {
+            background-color: var(--color);
+            color: var(--color-white);
+        }
+    }
+
+    &[data-part="item"] {
+        --color: var(--color-primary);
+
+        display: flex;
+        flex: 1 0 0;
+        align-items: center;
+
+        &:last-of-type {
+            flex: initial;
+        }
+    }
+
+    &[data-part="separator"] {
+        flex: 1;
+        height: calc(var(--spacing) * 0.5);
+        background-color: var(--color-black-muted);
+        margin-inline: calc(var(--spacing) * 3);
+
+        &[data-complete] {
+            background-color: var(--color);
+        }
+    }
+}

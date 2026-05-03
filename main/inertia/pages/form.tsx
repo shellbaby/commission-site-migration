@@ -45,28 +45,28 @@ const fileUploadErrorMessage: Record<FileUploadFileError, string> = {
 
 const _MAX_FILE_SIZE = 1024 * 1024 * 5
 
-const fileUploadValidate = (
-    file: File,
-    details: FileUpload.FileValidateDetails
-): FileUpload.FileError[] | null => {
-    if (
-        details.acceptedFiles.find(
-            (acceptFile) => acceptFile.name === file.name
-        )
-    ) {
-        return ["FILE_EXISTS"]
-    }
+// const fileUploadValidate = (
+//     file: File,
+//     details: FileUpload.FileValidateDetails
+// ): FileUpload.FileError[] | null => {
+//     if (
+//         details.acceptedFiles.find(
+//             (acceptFile) => acceptFile.name === file.name
+//         )
+//     ) {
+//         return ["FILE_EXISTS"]
+//     }
 
-    if (details.acceptedFiles.length >= 5) {
-        return ["TOO_MANY_FILES"]
-    }
+//     if (details.acceptedFiles.length >= 5) {
+//         return ["TOO_MANY_FILES"]
+//     }
 
-    if (file.size > _MAX_FILE_SIZE) {
-        return ["FILE_TOO_LARGE"]
-    }
+//     if (file.size > _MAX_FILE_SIZE) {
+//         return ["FILE_TOO_LARGE"]
+//     }
 
-    return null
-}
+//     return null
+// }
 
 export default function Page({ commType, client }: PageProps) {
     interface FormValues {

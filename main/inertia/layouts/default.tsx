@@ -10,7 +10,6 @@ import {
 } from "@phosphor-icons/react"
 import { ReactElement, useEffect } from "react"
 import { createToaster, Navigation, Portal, Toast, Toaster } from "~/components"
-import "../components/style"
 
 const toaster = createToaster({
     placement: "bottom-end",

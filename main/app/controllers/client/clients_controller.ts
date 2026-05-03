@@ -1,5 +1,6 @@
 import { appUrl } from "#config/app"
 import Client from "#models/client"
+import Commission from "#models/commission"
 import { signupValidator } from "#validators/client"
 import stringHelpers from "@adonisjs/core/helpers/string"
 import type { HttpContext } from "@adonisjs/core/http"
@@ -30,6 +31,17 @@ export default class ClientsController {
             ...payload,
             verificationToken: verificationToken,
         })
+
+        const commissions = await Commission.query()
+            .select("*")
+            .where("email", client.email)
+
+        if (commissions.length > 0) {
+            for (const commission of commissions) {
+                commission.clientUuid = client.clientUuid
+                await commission.save()
+            }
+        }
 
         const signedURL = signedUrlFor(
             "link.emails.verify",

@@ -1,5 +1,6 @@
 import { Field as ArkField } from "@ark-ui/react/field"
 import { ReactNode } from "react"
+import "./style.css"
 
 interface LabelProps extends ArkField.LabelProps {}
 const Label = (props: LabelProps) => {

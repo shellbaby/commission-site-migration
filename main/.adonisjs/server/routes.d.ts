@@ -11,7 +11,9 @@ export type ScannedRoutes = {
     'link.gallery': { paramsTuple?: []; params?: {} }
     'link.contact': { paramsTuple?: []; params?: {} }
     'link.form': { paramsTuple?: []; params?: {} }
+    'link.commission-details': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
     'link.profile': { paramsTuple?: []; params?: {} }
+    'link.commissions': { paramsTuple?: []; params?: {} }
     'link.signin': { paramsTuple?: []; params?: {} }
     'link.signin-alias': { paramsTuple?: []; params?: {} }
     'link.signout': { paramsTuple?: []; params?: {} }
@@ -38,7 +40,9 @@ export type ScannedRoutes = {
     'link.gallery': { paramsTuple?: []; params?: {} }
     'link.contact': { paramsTuple?: []; params?: {} }
     'link.form': { paramsTuple?: []; params?: {} }
+    'link.commission-details': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
     'link.profile': { paramsTuple?: []; params?: {} }
+    'link.commissions': { paramsTuple?: []; params?: {} }
     'link.signin': { paramsTuple?: []; params?: {} }
     'link.signin-alias': { paramsTuple?: []; params?: {} }
     'link.signout': { paramsTuple?: []; params?: {} }
@@ -59,7 +63,9 @@ export type ScannedRoutes = {
     'link.gallery': { paramsTuple?: []; params?: {} }
     'link.contact': { paramsTuple?: []; params?: {} }
     'link.form': { paramsTuple?: []; params?: {} }
+    'link.commission-details': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
     'link.profile': { paramsTuple?: []; params?: {} }
+    'link.commissions': { paramsTuple?: []; params?: {} }
     'link.signin': { paramsTuple?: []; params?: {} }
     'link.signin-alias': { paramsTuple?: []; params?: {} }
     'link.signout': { paramsTuple?: []; params?: {} }

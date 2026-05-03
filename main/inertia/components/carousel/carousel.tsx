@@ -1,5 +1,6 @@
 import { Carousel as ArkCarousel } from "@ark-ui/react/carousel"
 import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react"
+import "./style.css"
 
 export interface CarouselImage {
     width: number

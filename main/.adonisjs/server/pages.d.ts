@@ -15,7 +15,10 @@ declare module '@adonisjs/inertia/types' {
     'auth/signin': ExtractProps<(typeof import('../../inertia/pages/auth/signin.tsx'))['default']>
     'auth/signup': ExtractProps<(typeof import('../../inertia/pages/auth/signup.tsx'))['default']>
     'auth/verify-email': ExtractProps<(typeof import('../../inertia/pages/auth/verify-email.tsx'))['default']>
+    'commission-details': ExtractProps<(typeof import('../../inertia/pages/commission-details.tsx'))['default']>
+    'commission-history': ExtractProps<(typeof import('../../inertia/pages/commission-history.tsx'))['default']>
     'contact': ExtractProps<(typeof import('../../inertia/pages/contact.tsx'))['default']>
+    'errors/commission-details': ExtractProps<(typeof import('../../inertia/pages/errors/commission-details.tsx'))['default']>
     'errors/not_found': ExtractProps<(typeof import('../../inertia/pages/errors/not_found.tsx'))['default']>
     'errors/server_error': ExtractProps<(typeof import('../../inertia/pages/errors/server_error.tsx'))['default']>
     'errors/verification-failed': ExtractProps<(typeof import('../../inertia/pages/errors/verification-failed.tsx'))['default']>

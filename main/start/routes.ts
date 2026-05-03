@@ -24,11 +24,21 @@ router
         router
             .get("/form", [controllers.commission.Commissions, "create"])
             .as("form")
+        router
+            .get("/commission-details/:commission_uuid", [
+                controllers.commission.Commissions,
+                "show",
+            ])
+            .as("commission-details")
 
         // Client-specific links //
         router
             .get("/profile", [controllers.client.Clients, "edit"])
             .as("profile")
+            .use(middleware.auth())
+        router
+            .get("/commissions", [controllers.commission.Commissions, "index"])
+            .as("commissions")
             .use(middleware.auth())
 
         // Sign in/up/out links //
