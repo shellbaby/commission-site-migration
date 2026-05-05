@@ -1,0 +1,22 @@
+.Root {
+    user-select: none;
+}
+
+.Indicator {
+    position: relative;
+    &:is([data-rejected]) {
+        background: var(--color) !important;
+        color: var(--color-white) !important;
+    }
+}
+
+.Title {
+    position: absolute;
+    top: calc(100% + var(--spacing) * 1);
+    font-weight: var(--font-weight-bold);
+    color: var(--color);
+}
+
+.Separator {
+    width: 100%;
+}

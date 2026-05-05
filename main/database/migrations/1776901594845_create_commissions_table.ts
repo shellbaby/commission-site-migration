@@ -1,5 +1,9 @@
 import { BaseSchema } from "@adonisjs/lucid/schema"
-import { CommissionStatus, CommissionType } from "@shellbaby/shared/types"
+import {
+    CommissionStatus,
+    CommissionType,
+    PaymentStatus,
+} from "@shellbaby/shared/types"
 
 export default class extends BaseSchema {
     protected tableName = "commissions"
@@ -7,6 +11,7 @@ export default class extends BaseSchema {
     async up() {
         this.schema.raw('DROP TYPE IF EXISTS "commission_type"')
         this.schema.raw('DROP TYPE IF EXISTS "commission_status"')
+        this.schema.raw('DROP TYPE IF EXISTS "payment_status"')
 
         this.schema.createTable(this.tableName, (table) => {
             table.increments("id").primary().unique()
@@ -43,6 +48,13 @@ export default class extends BaseSchema {
                     existingType: false,
                 })
                 .defaultTo("pending")
+            table
+                .enum("payment_status", PaymentStatus, {
+                    useNative: true,
+                    enumName: "payment_status",
+                    existingType: false,
+                })
+                .defaultTo("pending")
             table.boolean("tos_agreement").notNullable()
             table.boolean("no_reserve_agreement").notNullable()
         })
@@ -51,6 +63,7 @@ export default class extends BaseSchema {
     async down() {
         this.schema.raw('DROP TYPE IF EXISTS "commission_type"')
         this.schema.raw('DROP TYPE IF EXISTS "commission_status"')
+        this.schema.raw('DROP TYPE IF EXISTS "payment_status"')
         this.schema.dropTable(this.tableName)
     }
 }

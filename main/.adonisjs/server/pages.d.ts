@@ -28,5 +28,6 @@ declare module '@adonisjs/inertia/types' {
     'price': ExtractProps<(typeof import('../../inertia/pages/price.tsx'))['default']>
     'profile': ExtractProps<(typeof import('../../inertia/pages/profile.tsx'))['default']>
     'tos': ExtractProps<(typeof import('../../inertia/pages/tos.tsx'))['default']>
+    'errors/not-found/commission': ExtractProps<(typeof import('../../inertia/pages/errors/not-found/commission.tsx'))['default']>
   }
 }

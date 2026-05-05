@@ -3,6 +3,10 @@ export { Avatar } from "./avatar/avatar"
 export { Button } from "./button/button"
 export { Carousel, type CarouselImage } from "./carousel/carousel"
 export { Checkbox } from "./checkbox/checkbox"
+export {
+    CommissionSteps,
+    StepIconMapping,
+} from "./commission-step/commission-step"
 export { Field } from "./field/field"
 export { Fieldset } from "./fieldset/fieldset"
 export {

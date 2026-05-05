@@ -48,10 +48,16 @@ const routes = {
     tokens: [{"old":"/form","type":0,"val":"form","end":""}],
     types: placeholder as Registry['link.form']['types'],
   },
+  'link.commissions': {
+    methods: ["GET","HEAD"],
+    pattern: '/commissions',
+    tokens: [{"old":"/commissions","type":0,"val":"commissions","end":""}],
+    types: placeholder as Registry['link.commissions']['types'],
+  },
   'link.commission-details': {
     methods: ["GET","HEAD"],
-    pattern: '/commission-details/:commission_uuid',
-    tokens: [{"old":"/commission-details/:commission_uuid","type":0,"val":"commission-details","end":""},{"old":"/commission-details/:commission_uuid","type":1,"val":"commission_uuid","end":""}],
+    pattern: '/commissions/:commission_number',
+    tokens: [{"old":"/commissions/:commission_number","type":0,"val":"commissions","end":""},{"old":"/commissions/:commission_number","type":1,"val":"commission_number","end":""}],
     types: placeholder as Registry['link.commission-details']['types'],
   },
   'link.profile': {
@@ -59,12 +65,6 @@ const routes = {
     pattern: '/profile',
     tokens: [{"old":"/profile","type":0,"val":"profile","end":""}],
     types: placeholder as Registry['link.profile']['types'],
-  },
-  'link.commissions': {
-    methods: ["GET","HEAD"],
-    pattern: '/commissions',
-    tokens: [{"old":"/commissions","type":0,"val":"commissions","end":""}],
-    types: placeholder as Registry['link.commissions']['types'],
   },
   'link.signin': {
     methods: ["GET","HEAD"],

@@ -25,7 +25,11 @@ router
             .get("/form", [controllers.commission.Commissions, "create"])
             .as("form")
         router
-            .get("/commission-details/:commission_uuid", [
+            .get("/commissions", [controllers.commission.Commissions, "index"])
+            .as("commissions")
+            .use(middleware.auth())
+        router
+            .get("/commissions/:commission_number", [
                 controllers.commission.Commissions,
                 "show",
             ])
@@ -35,10 +39,6 @@ router
         router
             .get("/profile", [controllers.client.Clients, "edit"])
             .as("profile")
-            .use(middleware.auth())
-        router
-            .get("/commissions", [controllers.commission.Commissions, "index"])
-            .as("commissions")
             .use(middleware.auth())
 
         // Sign in/up/out links //

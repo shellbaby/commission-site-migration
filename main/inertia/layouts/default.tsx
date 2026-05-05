@@ -67,7 +67,7 @@ export default function Layout({
 
                 <hr />
 
-                <div className="mt-12 flex-1">{children}</div>
+                <div className="mt-12 flex flex-1 flex-col  ">{children}</div>
 
                 <div className="py-12 text-center">
                     <small>

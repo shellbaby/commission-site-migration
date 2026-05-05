@@ -384,7 +384,13 @@ export default function Page({ commType, client }: PageProps) {
 
                         <Field.Root>
                             <Field.Label>Additional Notes</Field.Label>
-                            <Field.Textarea autoresize name="notes" />
+                            <Field.Textarea
+                                autoresize
+                                name="notes"
+                                onChange={(e) =>
+                                    setData("notes", e.target.value)
+                                }
+                            />
                         </Field.Root>
                     </div>
                 </div>

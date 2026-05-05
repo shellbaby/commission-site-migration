@@ -1,6 +1,7 @@
 import { ClientSchema } from "#database/schema"
 import Commission from "#models/commission"
 import { withAuthFinder } from "@adonisjs/auth/mixins/lucid"
+import { DbRememberMeTokensProvider } from "@adonisjs/auth/session"
 import { compose } from "@adonisjs/core/helpers"
 import hash from "@adonisjs/core/services/hash"
 import { beforeCreate, hasMany } from "@adonisjs/lucid/orm"
@@ -13,6 +14,8 @@ const AuthFinder = withAuthFinder(() => hash.use("scrypt"), {
 })
 
 export default class Client extends compose(ClientSchema, AuthFinder) {
+    static rememberMeTokens = DbRememberMeTokensProvider.forModel(Client)
+
     @hasMany(() => Commission)
     declare commissions: HasMany<typeof Commission>
 

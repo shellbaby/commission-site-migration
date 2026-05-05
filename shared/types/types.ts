@@ -64,3 +64,15 @@ export const CommissionTypeMapping: Record<
     "full-body": "Full Body",
     "ref-sheet": "Reference Sheet",
 }
+
+export const PaymentStatus = ["pending", "paid"] as const
+export type PaymentStatus = (typeof PaymentStatus)[number]
+const PaymentStatusDisplayName = ["Pending", "Paid"] as const
+type PaymentStatusDisplayName = (typeof PaymentStatusDisplayName)[number]
+export const PaymentStatusMapping: Record<
+    PaymentStatus,
+    PaymentStatusDisplayName
+> = {
+    paid: "Paid",
+    pending: "Pending",
+}

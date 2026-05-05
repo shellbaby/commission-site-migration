@@ -15,7 +15,7 @@ export default class SessionController {
             payload.password
         )
 
-        await auth.use("web").login(client)
+        await auth.use("web").login(client, payload.remember_me ?? false)
         return response.redirect().back()
     }
 

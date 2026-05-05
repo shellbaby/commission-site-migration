@@ -1,149 +1,144 @@
 import { Link } from "@adonisjs/inertia/react"
 import { Data } from "@generated/data"
+import { PlusIcon } from "@phosphor-icons/react"
 import {
-    CheckIcon,
-    ClockCountdownIcon,
-    Icon,
-    PaintBrushIcon,
-    PencilLineIcon,
-    XIcon,
-} from "@phosphor-icons/react"
-import {
-    CommissionStatus,
     CommissionStatusMapping,
+    PaymentStatusMapping,
 } from "@shellbaby/shared/types"
-import { DateTime } from "luxon"
-import { CSSProperties } from "react"
-import { Button, Steps } from "~/components"
+import { Button, StepIconMapping } from "~/components"
 import { InertiaProps } from "~/types"
+import { readableDate } from "~/utils/datetime"
+import { PaymentIconMapping } from "~/utils/mapping"
 
-const StepIconMapping: Record<CommissionStatus, { color: string; icon: Icon }> =
-    {
-        pending: {
-            color: "var(--color-mulfok32-14)",
-            icon: ClockCountdownIcon,
-        },
-        sketching: { color: "var(--color-mulfok32-13)", icon: PencilLineIcon },
-        coloring: { color: "var(--color-mulfok32-17)", icon: PaintBrushIcon },
-        finished: { color: "var(--color-success)", icon: CheckIcon },
-        rejected: { color: "var(--color-error)", icon: XIcon },
-    }
-
-type PageProps = InertiaProps<{ commissions: Data.Commission[] }>
+type PageProps = InertiaProps<{
+    commissions: Data.Commission.Variants["forBriefView"][]
+}>
 export default function Page({ commissions }: PageProps) {
-    const convertDateTime = (isoDate: string) => {
-        const dateTime = DateTime.fromISO(isoDate).toLocal()
-        const { day, month, year }: Record<"day" | "month" | "year", string> = {
-            day: `${dateTime.day}`,
-            month: dateTime.monthShort ?? `${dateTime.month}`,
-            year: `${dateTime.year}`,
-        }
-
-        return `${month} ${day}, ${year}`
-    }
-
     return (
         <>
-            <h2 className="mb-12">Commission History</h2>
+            <h2 className="mb-12 text-center">Commission History</h2>
 
-            <div className="flex flex-col gap-12">
-                {commissions.map((commission) => {
-                    const {
-                        commissionNumber,
-                        createdAt,
-                        idea,
-                        notes,
-                        type,
-                        refSheets,
-                        status,
-                    } = commission
+            <div className="flex flex-1 flex-col gap-12">
+                {commissions.length === 0 ? (
+                    <div className="grid h-full place-items-center">
+                        <div className="flex flex-col items-center gap-3">
+                            <span
+                                style={{
+                                    color: "oklch(from var(--color-black-muted) l c h / .4)",
+                                }}
+                                className="text-h2 font-bold select-none"
+                            >
+                                It's a bit empty here
+                            </span>
 
-                    return (
-                        <div
-                            key={commissionNumber}
-                            className="border-black-muted rounded-default border-2"
-                        >
-                            <div className="flex justify-between px-6 py-3">
-                                <div className="flex gap-12">
-                                    <div>
-                                        <p className="font-bold">
-                                            Commission number
-                                        </p>
-                                        <span>{commissionNumber}</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-bold">
-                                            Date created
-                                        </p>
-                                        <span>
-                                            {convertDateTime(createdAt!)}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <Button asChild>
-                                    <Link route="link.home">
-                                        View Commission
-                                    </Link>
-                                </Button>
-                            </div>
-
-                            <hr />
-
-                            <div className="px-6 py-6">
-                                <h4 className="mb-3">{type}</h4>
-                                <div>
-                                    <Steps.Root
-                                        step={
-                                            status !== "finished"
-                                                ? CommissionStatus.indexOf(
-                                                      status
-                                                  )
-                                                : CommissionStatus.length
-                                        }
-                                    >
-                                        <Steps.List>
-                                            {CommissionStatus.slice(0, 4).map(
-                                                (item, index) => {
-                                                    const {
-                                                        icon: StepIcon,
-                                                        color,
-                                                    } = StepIconMapping[item]
-
-                                                    return (
-                                                        <Steps.Item
-                                                            key={item}
-                                                            index={index}
-                                                            style={
-                                                                {
-                                                                    "--color":
-                                                                        color,
-                                                                } as CSSProperties
-                                                            }
-                                                        >
-                                                            <Steps.Indicator>
-                                                                <StepIcon
-                                                                    size={21}
-                                                                />
-                                                            </Steps.Indicator>
-                                                            <Steps.Separator />
-                                                        </Steps.Item>
-                                                    )
-                                                }
-                                            )}
-                                        </Steps.List>
-                                        <p className="mt-3">
-                                            <span className="font-bold">
-                                                Status:{" "}
-                                            </span>
-                                            {CommissionStatusMapping[status]}
-                                        </p>
-                                    </Steps.Root>
-                                </div>
-                            </div>
+                            <Button asChild>
+                                <Link route="link.form">
+                                    <PlusIcon className="mr-3" />
+                                    Add Commission
+                                </Link>
+                            </Button>
                         </div>
-                    )
-                })}
+                    </div>
+                ) : (
+                    commissions.map((commission) => {
+                        const {
+                            commissionNumber,
+                            createdAt,
+                            type,
+                            status,
+                            paymentStatus,
+                        } = commission
+
+                        const PaymentIcon =
+                            PaymentIconMapping[paymentStatus].icon
+                        const CommissionIcon = StepIconMapping[status].icon
+
+                        return (
+                            <div
+                                key={commissionNumber}
+                                className="border-black-muted rounded-default border-2"
+                            >
+                                <div className="flex justify-between px-6 py-3">
+                                    <div className="flex gap-12">
+                                        <div>
+                                            <p className="font-bold">
+                                                Commission number
+                                            </p>
+                                            <span>{commissionNumber}</span>
+                                        </div>
+                                        <div>
+                                            <p className="font-bold">
+                                                Date created
+                                            </p>
+                                            <span>
+                                                {readableDate(createdAt!)}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <Button asChild>
+                                        <Link
+                                            route="link.commission-details"
+                                            routeParams={{
+                                                commission_number:
+                                                    commissionNumber,
+                                            }}
+                                        >
+                                            View Commission
+                                        </Link>
+                                    </Button>
+                                </div>
+
+                                <hr />
+
+                                <div className="flex px-6 py-6">
+                                    <div className="aspect-square h-[192px]">
+                                        image
+                                    </div>
+                                    <div>
+                                        <h4 className="mb-3">{type}</h4>
+                                        <p className="text-h6 mb-1">
+                                            Payment Status:{" "}
+                                            <span
+                                                className="inline-flex items-center gap-1 font-bold"
+                                                style={{
+                                                    color: PaymentIconMapping[
+                                                        paymentStatus
+                                                    ].color,
+                                                }}
+                                            >
+                                                {
+                                                    PaymentStatusMapping[
+                                                        paymentStatus
+                                                    ]
+                                                }
+                                                <PaymentIcon />
+                                            </span>
+                                        </p>
+                                        <p className="text-h6">
+                                            Commission Status:{" "}
+                                            <span
+                                                className="inline-flex items-center gap-1 font-bold"
+                                                style={{
+                                                    color: StepIconMapping[
+                                                        status
+                                                    ].color,
+                                                }}
+                                            >
+                                                {
+                                                    CommissionStatusMapping[
+                                                        status
+                                                    ]
+                                                }
+                                                <CommissionIcon />
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                )}
             </div>
         </>
     )

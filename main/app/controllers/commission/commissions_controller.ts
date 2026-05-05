@@ -11,7 +11,7 @@ export default class CommissionsController {
     /**
      * Display a list of resource
      */
-    async index({ auth, response, inertia }: HttpContext) {
+    async index({ auth, inertia }: HttpContext) {
         const client = auth.getUserOrFail()
 
         if (client) {
@@ -21,7 +21,10 @@ export default class CommissionsController {
                 clientUuid
             )
             return inertia.render("commission-history", {
-                commissions: CommissionTransformer.transform(commissions),
+                commissions:
+                    CommissionTransformer.transform(commissions).useVariant(
+                        "forBriefView"
+                    ),
             })
         }
     }
@@ -41,7 +44,7 @@ export default class CommissionsController {
     /**
      * Handle form submission for the create action
      */
-    async store({ request, response, auth, session }: HttpContext) {
+    async store({ request, response, auth, session, inertia }: HttpContext) {
         const { ref_sheets, commission_type, ...data } =
             await request.validateUsing(commissionValidator)
 
@@ -96,22 +99,30 @@ export default class CommissionsController {
         }
 
         const comm = await Commission.create({ ...newCommData })
+        console.log(comm)
 
-        return response.ok(comm)
+        session.flash("success", "Commission created!")
+
+        return response.redirect().toRoute("link.commissions")
     }
 
     /**
      * Show individual record
      */
-    async show({ params }: HttpContext) {
-        const commissionUuid = params.commission_uuid
+    async show({ params, inertia }: HttpContext) {
+        const commissionNumber = params.commission_number
         const commission = await Commission.query()
-            .where("commission_uuid", commissionUuid)
+            .where("commission_number", commissionNumber)
             .first()
 
         if (!commission) {
-            return
+            return inertia.render("errors/not-found/commission", {})
         }
+
+        return inertia.render("commission-details", {
+            commission:
+                CommissionTransformer.transform(commission) ?? undefined,
+        })
     }
 
     /**

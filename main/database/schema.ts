@@ -33,7 +33,7 @@ export class ClientSchema extends BaseModel {
 }
 
 export class CommissionSchema extends BaseModel {
-  static $columns = ['clientUuid', 'commissionNumber', 'createdAt', 'email', 'id', 'idea', 'name', 'noReserveAgreement', 'notes', 'refSheets', 'status', 'tosAgreement', 'type', 'updatedAt'] as const
+  static $columns = ['clientUuid', 'commissionNumber', 'createdAt', 'email', 'id', 'idea', 'name', 'noReserveAgreement', 'notes', 'paymentStatus', 'refSheets', 'status', 'tosAgreement', 'type', 'updatedAt'] as const
   $columns = CommissionSchema.$columns
   @column()
   declare clientUuid: string | null
@@ -54,6 +54,8 @@ export class CommissionSchema extends BaseModel {
   @column()
   declare notes: string | null
   @column()
+  declare paymentStatus: any | null
+  @column()
   declare refSheets: any
   @column()
   declare status: any | null
@@ -63,4 +65,21 @@ export class CommissionSchema extends BaseModel {
   declare type: any
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class RememberMeTokenSchema extends BaseModel {
+  static $columns = ['createdAt', 'expiresAt', 'hash', 'id', 'tokenableId', 'updatedAt'] as const
+  $columns = RememberMeTokenSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column()
+  declare hash: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare tokenableId: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
 }

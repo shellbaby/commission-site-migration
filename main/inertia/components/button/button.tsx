@@ -6,18 +6,25 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     asChild?: boolean
     color?: string
     width?: "full" | "fit"
+    variant?: "filled" | "outline" | "ghost"
 }
 
-export const Button = (props: ButtonProps) => {
+export const Button = ({
+    color,
+    width = "fit",
+    variant = "filled",
+    ...buttonProps
+}: ButtonProps) => {
     return (
         <ark.button
-            {...props}
+            {...buttonProps}
             data-scope="button"
             data-part="root"
+            data-variant={variant}
             style={
                 {
-                    "--color": props.color,
-                    "--width": props.width === "full" ? "100%" : "auto",
+                    "--color": color,
+                    "--width": width === "full" ? "100%" : "auto",
                 } as CSSProperties
             }
         />

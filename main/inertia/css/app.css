@@ -85,6 +85,14 @@
     --color-error: var(--color-mulfok32-6);
     --color-highlight: var(--color-mulfok32-15);
 
+    /* For commisssion and payment status */
+    --color-pending: oklch(from var(--color-mulfok32-5) calc(l - 0.02) c h);
+    --color-sketching: var(--color-mulfok32-13);
+    --color-coloring: var(--color-mulfok32-17);
+    --color-finished: var(--color-success);
+    --color-rejected: var(--color-error);
+    --color-paid: var(--color-success);
+
     --radius-default: var(--radius-md);
 
     --shadow-default: var(--shadow-md);

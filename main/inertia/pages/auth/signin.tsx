@@ -55,7 +55,7 @@ export default function Page() {
                                         <Checkbox.Label>
                                             Remember Me
                                         </Checkbox.Label>
-                                        <Checkbox.HiddenInput />
+                                        <Checkbox.HiddenInput name="remember_me" />
                                     </Checkbox.Root>
                                 </Field.Root>
 

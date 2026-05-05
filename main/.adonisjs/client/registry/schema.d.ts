@@ -91,13 +91,25 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
     }
   }
+  'link.commissions': {
+    methods: ["GET","HEAD"]
+    pattern: '/commissions'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
+    }
+  }
   'link.commission-details': {
     methods: ["GET","HEAD"]
-    pattern: '/commission-details/:commission_uuid'
+    pattern: '/commissions/:commission_number'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { commission_uuid: ParamValue }
+      params: { commission_number: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
@@ -113,18 +125,6 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['edit']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['edit']>>>
-    }
-  }
-  'link.commissions': {
-    methods: ["GET","HEAD"]
-    pattern: '/commissions'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
     }
   }
   'link.signin': {
