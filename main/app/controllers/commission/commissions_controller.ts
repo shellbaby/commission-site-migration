@@ -1,11 +1,13 @@
 import Commission from "#models/commission"
 import CommissionTransformer from "#transformers/commission_transformer"
 import { commissionValidator } from "#validators/commission"
-import string from "@adonisjs/core/helpers/string"
 import type { HttpContext } from "@adonisjs/core/http"
 import drive from "@adonisjs/drive/services/main"
 import { faker } from "@faker-js/faker"
 import { CommissionCode, CommissionType } from "@shellbaby/shared/types"
+
+import CommissionPolicy from "#policies/commission_policy"
+import string from "@adonisjs/core/helpers/string"
 
 export default class CommissionsController {
     /**
@@ -15,7 +17,7 @@ export default class CommissionsController {
         const client = auth.getUserOrFail()
 
         if (client) {
-            const clientUuid = client.clientUuid
+            const { clientUuid } = client
             const commissions = await Commission.query().where(
                 "clientUuid",
                 clientUuid
@@ -44,7 +46,7 @@ export default class CommissionsController {
     /**
      * Handle form submission for the create action
      */
-    async store({ request, response, auth, session, inertia }: HttpContext) {
+    async store({ request, response, auth, session }: HttpContext) {
         const { ref_sheets, commission_type, ...data } =
             await request.validateUsing(commissionValidator)
 
@@ -53,7 +55,7 @@ export default class CommissionsController {
             return response.badRequest()
         }
 
-        const client = auth.getUserOrFail()
+        const client = auth.user
         let uuid = null
 
         if (client) {
@@ -83,10 +85,21 @@ export default class CommissionsController {
 
         const fileURLs: string[] = []
 
+        const clientIdentifier = uuid ?? data.email
+        const rootPath = `${clientIdentifier}/commissions/${commissionNumber}`
+
         for (const file of ref_sheets) {
-            const fileName = `commissions/${commissionNumber}/${string.random(16)}.${file.extname}`
-            await file.moveToDisk(fileName)
-            const fileURL = await drive.use().getUrl(fileName)
+            const randomAdj = faker.word.adjective({
+                length: { min: 3, max: 7 },
+            })
+            const randomColor = faker.color.human()
+            const randomAnimal = faker.animal.type()
+            const randomFileName = string.pascalCase(
+                `${randomAdj} ${randomColor} ${randomAnimal}`
+            )
+            const filePath = `${rootPath}/${randomFileName}.${file.extname}`
+            await file.moveToDisk(filePath)
+            const fileURL = await drive.use().getUrl(filePath)
             fileURLs.push(fileURL)
         }
 
@@ -98,8 +111,7 @@ export default class CommissionsController {
             refSheets: JSON.stringify(fileURLs),
         }
 
-        const comm = await Commission.create({ ...newCommData })
-        console.log(comm)
+        await Commission.create({ ...newCommData })
 
         session.flash("success", "Commission created!")
 
@@ -109,13 +121,19 @@ export default class CommissionsController {
     /**
      * Show individual record
      */
-    async show({ params, inertia }: HttpContext) {
+    async show({ params, inertia, bouncer, response }: HttpContext) {
         const commissionNumber = params.commission_number
         const commission = await Commission.query()
             .where("commission_number", commissionNumber)
             .first()
 
         if (!commission) {
+            response.notFound()
+            return inertia.render("errors/not-found/commission", {})
+        }
+
+        if (await bouncer.with(CommissionPolicy).denies("show", commission)) {
+            response.notFound()
             return inertia.render("errors/not-found/commission", {})
         }
 
@@ -138,5 +156,22 @@ export default class CommissionsController {
     /**
      * Delete record
      */
-    async destroy({ params }: HttpContext) {}
+    async destroy({ params, response, bouncer }: HttpContext) {
+        const commissionNumber = params.commission_number
+
+        const commission = await Commission.query()
+            .where("commission_number", commissionNumber)
+            .first()
+
+        if (!commission) {
+            return response.redirect().status(303).back()
+        }
+
+        if (await bouncer.with(CommissionPolicy).denies("delete", commission)) {
+            return response.redirect().status(303).back()
+        }
+
+        await commission.delete()
+        return response.redirect().status(303).back()
+    }
 }

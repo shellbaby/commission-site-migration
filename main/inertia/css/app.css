@@ -78,12 +78,14 @@
 @theme inline {
     --color-white: var(--color-mulfok32-25-mod);
     --color-black: var(--color-mulfok32-21);
-    --color-black-muted: var(--color-mulfok32-23);
+    --color-black-muted: oklch(from var(--color-black) l c h / 0.2);
     --color-primary: var(--color-mulfok32-19);
     --color-separator: var(--color-black-muted);
     --color-success: var(--color-mulfok32-1);
     --color-error: var(--color-mulfok32-6);
     --color-highlight: var(--color-mulfok32-15);
+
+    --color-border: oklch(from var(--color-black) l c h / 0.5);
 
     /* For commisssion and payment status */
     --color-pending: oklch(from var(--color-mulfok32-5) calc(l - 0.02) c h);
@@ -96,6 +98,8 @@
     --radius-default: var(--radius-md);
 
     --shadow-default: var(--shadow-md);
+
+    --z-index-popover: 50;
 }
 
 body {

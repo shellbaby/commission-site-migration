@@ -1,11 +1,11 @@
-import { Link } from "@adonisjs/inertia/react"
+import { Link, useRouter } from "@adonisjs/inertia/react"
 import { Data } from "@generated/data"
 import { PlusIcon } from "@phosphor-icons/react"
 import {
     CommissionStatusMapping,
     PaymentStatusMapping,
 } from "@shellbaby/shared/types"
-import { Button, StepIconMapping } from "~/components"
+import { Button, Dialog, Portal, StepIconMapping } from "~/components"
 import { InertiaProps } from "~/types"
 import { readableDate } from "~/utils/datetime"
 import { PaymentIconMapping } from "~/utils/mapping"
@@ -14,6 +14,20 @@ type PageProps = InertiaProps<{
     commissions: Data.Commission.Variants["forBriefView"][]
 }>
 export default function Page({ commissions }: PageProps) {
+    const router = useRouter()
+
+    const handleDelete = async (commission_number: string) => {
+        router.visit(
+            {
+                route: "client.commissions.destroy",
+                routeParams: { commission_number },
+            },
+            {
+                only: ["commissions"],
+            }
+        )
+    }
+
     return (
         <>
             <h2 className="mb-12 text-center">Commission History</h2>
@@ -47,6 +61,7 @@ export default function Page({ commissions }: PageProps) {
                             type,
                             status,
                             paymentStatus,
+                            permissions,
                         } = commission
 
                         const PaymentIcon =
@@ -76,7 +91,7 @@ export default function Page({ commissions }: PageProps) {
                                         </div>
                                     </div>
 
-                                    <Button asChild>
+                                    <Button asChild variant="outline">
                                         <Link
                                             route="link.commission-details"
                                             routeParams={{
@@ -95,6 +110,7 @@ export default function Page({ commissions }: PageProps) {
                                     <div className="aspect-square h-[192px]">
                                         image
                                     </div>
+
                                     <div>
                                         <h4 className="mb-3">{type}</h4>
                                         <p className="text-h6 mb-1">
@@ -133,6 +149,64 @@ export default function Page({ commissions }: PageProps) {
                                                 <CommissionIcon />
                                             </span>
                                         </p>
+                                    </div>
+
+                                    <div className="flex flex-1 items-end justify-end">
+                                        {permissions.delete && (
+                                            <Dialog.Root role="alertdialog">
+                                                <Dialog.Trigger asChild>
+                                                    <Button color="var(--color-error)">
+                                                        Delete
+                                                    </Button>
+                                                </Dialog.Trigger>
+                                                <Portal>
+                                                    <Dialog.Backdrop />
+                                                    <Dialog.Positioner>
+                                                        <Dialog.Content>
+                                                            <div className="p-6">
+                                                                <Dialog.Title>
+                                                                    Are you
+                                                                    sure?
+                                                                </Dialog.Title>
+                                                                <Dialog.Description>
+                                                                    This action
+                                                                    cannot be
+                                                                    undone. This
+                                                                    will
+                                                                    permanently
+                                                                    delete the
+                                                                    pending
+                                                                    commission{" "}
+                                                                    {
+                                                                        commissionNumber
+                                                                    }
+                                                                </Dialog.Description>
+                                                            </div>
+
+                                                            <div className="flex justify-end gap-3 bg-[oklch(from_var(--color-black)_l_c_h/.12)] px-6 py-3">
+                                                                <Dialog.CloseTrigger
+                                                                    asChild
+                                                                >
+                                                                    <Button variant="ghost">
+                                                                        Cancel
+                                                                    </Button>
+                                                                </Dialog.CloseTrigger>
+                                                                <Button
+                                                                    color="var(--color-error)"
+                                                                    onClick={() =>
+                                                                        handleDelete(
+                                                                            commissionNumber
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            </div>
+                                                        </Dialog.Content>
+                                                    </Dialog.Positioner>
+                                                </Portal>
+                                            </Dialog.Root>
+                                        )}
                                     </div>
                                 </div>
                             </div>

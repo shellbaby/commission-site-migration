@@ -86,12 +86,16 @@ router
             .group(() => {
                 router
                     .resource("clients", controllers.client.Clients)
-                    .use(["destroy", "show", "update"], middleware.auth())
                     .except(["create", "edit", "index"])
+                    .use(["destroy", "show", "update"], middleware.auth())
 
                 router
                     .resource("commissions", controllers.commission.Commissions)
-                    .except(["create", "edit", "update"])
+                    .except(["create", "edit", "update", "show", "index"])
+                    .params({
+                        commissions: "commission_number",
+                    })
+                    .use(["destroy"], middleware.auth())
             })
             .as("client")
 

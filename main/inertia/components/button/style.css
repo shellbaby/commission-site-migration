@@ -27,7 +27,7 @@
 
         &[data-variant="outline"] {
             color: var(--color);
-            border: 2px solid var(--color);
+            border: 2px solid oklch(from var(--color) l c h / 0.4);
 
             &:not(:disabled):is(:hover, :focus-visible) {
                 background: var(--color);

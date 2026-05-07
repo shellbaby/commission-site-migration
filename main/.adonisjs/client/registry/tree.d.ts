@@ -36,9 +36,7 @@ export interface ApiDefinition {
       destroy: typeof routes['client.clients.destroy']
     }
     commissions: {
-      index: typeof routes['client.commissions.index']
       store: typeof routes['client.commissions.store']
-      show: typeof routes['client.commissions.show']
       destroy: typeof routes['client.commissions.destroy']
     }
   }

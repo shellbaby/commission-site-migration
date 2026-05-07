@@ -35,22 +35,26 @@ export default function Layout({
     ]
 
     useEffect(() => {
-        toaster.dismiss()
+        queueMicrotask(() => {
+            toaster.dismiss()
+        })
     }, [usePage().url])
 
     useEffect(() => {
-        if (error) {
-            toaster.error({
-                title: error,
-                duration: Infinity,
-            })
-        }
+        queueMicrotask(() => {
+            if (error) {
+                toaster.error({
+                    title: error,
+                    duration: Infinity,
+                })
+            }
 
-        if (success) {
-            toaster.success({
-                title: success,
-            })
-        }
+            if (success) {
+                toaster.success({
+                    title: success,
+                })
+            }
+        })
     })
 
     return (
@@ -67,7 +71,7 @@ export default function Layout({
 
                 <hr />
 
-                <div className="mt-12 flex flex-1 flex-col  ">{children}</div>
+                <div className="mt-12 flex flex-1 flex-col">{children}</div>
 
                 <div className="py-12 text-center">
                     <small>

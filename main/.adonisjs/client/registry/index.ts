@@ -138,28 +138,16 @@ const routes = {
     tokens: [{"old":"/api/v1/clients/:id","type":0,"val":"api","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"clients","end":""},{"old":"/api/v1/clients/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['client.clients.destroy']['types'],
   },
-  'client.commissions.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/commissions',
-    tokens: [{"old":"/api/v1/commissions","type":0,"val":"api","end":""},{"old":"/api/v1/commissions","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions","type":0,"val":"commissions","end":""}],
-    types: placeholder as Registry['client.commissions.index']['types'],
-  },
   'client.commissions.store': {
     methods: ["POST"],
     pattern: '/api/v1/commissions',
     tokens: [{"old":"/api/v1/commissions","type":0,"val":"api","end":""},{"old":"/api/v1/commissions","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions","type":0,"val":"commissions","end":""}],
     types: placeholder as Registry['client.commissions.store']['types'],
   },
-  'client.commissions.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/commissions/:id',
-    tokens: [{"old":"/api/v1/commissions/:id","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['client.commissions.show']['types'],
-  },
   'client.commissions.destroy': {
     methods: ["DELETE"],
-    pattern: '/api/v1/commissions/:id',
-    tokens: [{"old":"/api/v1/commissions/:id","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:id","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:id","type":1,"val":"id","end":""}],
+    pattern: '/api/v1/commissions/:commission_number',
+    tokens: [{"old":"/api/v1/commissions/:commission_number","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:commission_number","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:commission_number","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:commission_number","type":1,"val":"commission_number","end":""}],
     types: placeholder as Registry['client.commissions.destroy']['types'],
   },
   'auth.session.store': {

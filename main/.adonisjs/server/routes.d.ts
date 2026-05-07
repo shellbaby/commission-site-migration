@@ -26,10 +26,8 @@ export type ScannedRoutes = {
     'client.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'client.clients.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'client.clients.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.commissions.index': { paramsTuple?: []; params?: {} }
     'client.commissions.store': { paramsTuple?: []; params?: {} }
-    'client.commissions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'commission_number': ParamValue} }
     'auth.session.store': { paramsTuple?: []; params?: {} }
   }
   GET: {
@@ -52,8 +50,6 @@ export type ScannedRoutes = {
     'link.emails.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
     'link.verify-instruction': { paramsTuple?: []; params?: {} }
     'client.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.commissions.index': { paramsTuple?: []; params?: {} }
-    'client.commissions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
@@ -75,8 +71,6 @@ export type ScannedRoutes = {
     'link.emails.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
     'link.verify-instruction': { paramsTuple?: []; params?: {} }
     'client.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.commissions.index': { paramsTuple?: []; params?: {} }
-    'client.commissions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
     'client.clients.store': { paramsTuple?: []; params?: {} }
@@ -91,7 +85,7 @@ export type ScannedRoutes = {
   }
   DELETE: {
     'client.clients.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'commission_number': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

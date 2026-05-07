@@ -1,7 +1,8 @@
-import { Head, useForm } from "@inertiajs/react"
+import { useRouter } from "@adonisjs/inertia/react"
+import { Head, useForm as useInertiaForm } from "@inertiajs/react"
 import { CaretUpDownIcon, CheckIcon, XIcon } from "@phosphor-icons/react"
 import { type CommissionType } from "@shellbaby/shared/types"
-import React from "react"
+import { Controller, useForm } from "react-hook-form"
 import {
     Button,
     Checkbox,
@@ -83,42 +84,44 @@ export default function Page({ commType, client }: PageProps) {
     }
 
     const {
-        errors,
-        processing,
-        wasSuccessful,
-        progress,
-        setData,
-        isDirty,
-        post,
-        data,
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting, isValid },
+        control,
     } = useForm<FormValues>({
-        name: client?.name ?? "",
-        email: client?.email ?? "",
-        commission_type: undefined,
-        idea: "",
-        notes: "",
-        tos_agreement: "",
-        no_reserve_agreement: "",
-        ref_sheets: [],
+        defaultValues: {
+            commission_type: commType,
+            name: client?.name ?? undefined,
+            email: client?.email,
+        },
     })
 
-    const handleFileAccept = (
-        acceptedDetails: FileUpload.FileAcceptDetails
-    ) => {
-        setData("ref_sheets", acceptedDetails.files)
-    }
+    const {} = useInertiaForm<FormValues>()
 
     const fileUploadContext = useFileUpload({
         maxFiles: 5,
         maxFileSize: _MAX_FILE_SIZE,
         accept: "image/png,image/jpeg",
-        onFileAccept: handleFileAccept,
     })
 
-    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        post("/api/v1/commissions")
-    }
+    const router = useRouter()
+    const onSubmit = handleSubmit(async (data) => {
+        return new Promise((resolve) => {
+            router.visit(
+                {
+                    route: "client.commissions.store",
+                },
+                {
+                    data: {
+                        ...data,
+                    },
+                    onSuccess: () => resolve("success"),
+                    onError: () => resolve("error"),
+                    onFinish: () => resolve("finish"),
+                }
+            )
+        })
+    })
 
     return (
         <>
@@ -126,7 +129,8 @@ export default function Page({ commType, client }: PageProps) {
             <h2 className="mb-12 text-center">Commission Form</h2>
             <form
                 className="rounded-default border-separator border-2 p-9"
-                onSubmit={handleSubmit}
+                onSubmit={onSubmit}
+                noValidate
             >
                 <div id="form-slot">
                     <div>
@@ -137,13 +141,19 @@ export default function Page({ commType, client }: PageProps) {
                             <Field.Label>Your name</Field.Label>
                             <Field.Input
                                 placeholder="Name / Nickname"
-                                name="name"
-                                defaultValue={data.name}
-                                onChange={(e) =>
-                                    setData("name", e.target.value)
-                                }
+                                {...register("name", {
+                                    required:
+                                        "Please fill out your name/nickname",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9\s]{1,30}$/,
+                                        message:
+                                            "Only alphanumerical characters are allowed, max. 30 characters",
+                                    },
+                                })}
                             />
-                            <Field.ErrorText>{errors.name}</Field.ErrorText>
+                            <Field.ErrorText>
+                                {errors.name?.message}
+                            </Field.ErrorText>
                             <Field.HelperText asChild>
                                 <ul className="[&>li]:mt-0!">
                                     <li>Alphanumerical characters only</li>
@@ -157,13 +167,13 @@ export default function Page({ commType, client }: PageProps) {
                             <Field.Input
                                 type="email"
                                 placeholder="your@email.com"
-                                name="email"
-                                onChange={(e) =>
-                                    setData("email", e.target.value)
-                                }
-                                defaultValue={data.email}
+                                {...register("email", {
+                                    required: "Please fill out your email",
+                                })}
                             />
-                            <Field.ErrorText>{errors.email}</Field.ErrorText>
+                            <Field.ErrorText>
+                                {errors.email?.message}
+                            </Field.ErrorText>
                         </Field.Root>
 
                         <Fieldset.Root>
@@ -192,68 +202,79 @@ export default function Page({ commType, client }: PageProps) {
                         <h5>Commission Info</h5>
                     </div>
                     <div id="form-group">
-                        <Field.Root invalid={!!errors.commission_type} required>
-                            <Select.Root
-                                name={"commission_type"}
-                                collection={commTypes}
-                                defaultValue={[commType ?? ""]}
-                            >
-                                <Select.Label>
-                                    Commission Type
-                                    <Field.RequiredIndicator>
-                                        Required
-                                    </Field.RequiredIndicator>
-                                </Select.Label>
-                                <Select.Control>
-                                    <Select.Trigger>
-                                        <Select.ValueText placeholder="Select a Commission Type" />
-                                        <Select.Indicator>
-                                            <CaretUpDownIcon />
-                                        </Select.Indicator>
-                                    </Select.Trigger>
-                                </Select.Control>
+                        <Controller
+                            name="commission_type"
+                            control={control}
+                            rules={{
+                                required: "Please select a commission type",
+                            }}
+                            render={({
+                                field: { name, value, ref, onBlur, onChange },
+                                fieldState: { invalid, error },
+                            }) => (
+                                <Field.Root invalid={invalid} required>
+                                    <Select.Root
+                                        name={name}
+                                        collection={commTypes}
+                                        value={value ? [value] : undefined}
+                                        onValueChange={(e) =>
+                                            onChange(e.value[0])
+                                        }
+                                        onInteractOutside={onBlur}
+                                    >
+                                        <Select.Label>
+                                            Commission Type
+                                            <Field.RequiredIndicator>
+                                                Required
+                                            </Field.RequiredIndicator>
+                                        </Select.Label>
+                                        <Select.Control>
+                                            <Select.Trigger ref={ref}>
+                                                <Select.ValueText placeholder="Select a Commission Type" />
+                                                <Select.Indicator>
+                                                    <CaretUpDownIcon />
+                                                </Select.Indicator>
+                                            </Select.Trigger>
+                                        </Select.Control>
 
-                                <Select.Positioner>
-                                    <Select.Content>
-                                        {commTypes.items.map((item) => (
-                                            <Select.Item
-                                                key={item.value}
-                                                item={item}
-                                            >
-                                                <Select.ItemText>
-                                                    {item.label}
-                                                </Select.ItemText>
-                                                <Select.ItemIndicator>
-                                                    <CheckIcon />
-                                                </Select.ItemIndicator>
-                                            </Select.Item>
-                                        ))}
-                                    </Select.Content>
-                                </Select.Positioner>
-                                <Select.HiddenSelect
-                                    onChange={(e) =>
-                                        setData(
-                                            "commission_type",
-                                            e.target.value as CommissionType
-                                        )
-                                    }
-                                />
-                            </Select.Root>
-                            <Field.ErrorText>
-                                {errors.commission_type}
-                            </Field.ErrorText>
-                        </Field.Root>
+                                        <Select.Positioner>
+                                            <Select.Content>
+                                                {commTypes.items.map((item) => (
+                                                    <Select.Item
+                                                        key={item.value}
+                                                        item={item}
+                                                    >
+                                                        <Select.ItemText>
+                                                            {item.label}
+                                                        </Select.ItemText>
+                                                        <Select.ItemIndicator>
+                                                            <CheckIcon />
+                                                        </Select.ItemIndicator>
+                                                    </Select.Item>
+                                                ))}
+                                            </Select.Content>
+                                        </Select.Positioner>
+                                        <Select.HiddenSelect />
+                                    </Select.Root>
+                                    <Field.ErrorText>
+                                        {error?.message}
+                                    </Field.ErrorText>
+                                </Field.Root>
+                            )}
+                        />
 
                         <Field.Root invalid={!!errors.idea} required>
                             <Field.Label>Commission Idea</Field.Label>
                             <Field.Textarea
                                 autoresize
-                                name="idea"
-                                onChange={(e) =>
-                                    setData("idea", e.target.value)
-                                }
+                                {...register("idea", {
+                                    required:
+                                        "Please provide the idea for your commission",
+                                })}
                             />
-                            <Field.ErrorText>{errors.idea}</Field.ErrorText>
+                            <Field.ErrorText>
+                                {errors.idea?.message}
+                            </Field.ErrorText>
                         </Field.Root>
 
                         <Field.Root invalid={!!errors.ref_sheets} required>
@@ -375,97 +396,117 @@ export default function Page({ commType, client }: PageProps) {
                                         Clear all files
                                     </Button>
                                 </FileUpload.ClearTrigger>
-                                <FileUpload.HiddenInput name="ref_sheets[]" />
+                                <FileUpload.HiddenInput
+                                    {...register("ref_sheets", {
+                                        required:
+                                            "Please provide at least one reference sheet",
+                                    })}
+                                />
                             </FileUpload.RootProvider>
                             <Field.ErrorText>
-                                {errors.ref_sheets}
+                                {errors.ref_sheets?.message}
                             </Field.ErrorText>
                         </Field.Root>
 
                         <Field.Root>
                             <Field.Label>Additional Notes</Field.Label>
-                            <Field.Textarea
-                                autoresize
-                                name="notes"
-                                onChange={(e) =>
-                                    setData("notes", e.target.value)
-                                }
-                            />
+                            <Field.Textarea autoresize {...register("notes")} />
                         </Field.Root>
                     </div>
                 </div>
 
                 <div id="form-slot">
                     <div id="form-group" className="col-span-full!">
-                        <Field.Root
-                            className="col-span-full mt-2"
-                            invalid={!!errors.tos_agreement}
-                            required
-                        >
-                            <Checkbox.Root name={"tos_agreement"}>
-                                <Checkbox.Control>
-                                    <Checkbox.Indicator>
-                                        <CheckIcon />
-                                    </Checkbox.Indicator>
-                                </Checkbox.Control>
-                                <Checkbox.Label>
-                                    I have read and agreed to the Terms of
-                                    Service
-                                </Checkbox.Label>
-                                <Checkbox.HiddenInput
-                                    onChange={(e) =>
-                                        setData("tos_agreement", e.target.value)
-                                    }
-                                />
+                        <Controller
+                            name="tos_agreement"
+                            control={control}
+                            rules={{ required: "Please read and agree to ToS" }}
+                            render={({
+                                field: { name, ref, value, onBlur, onChange },
+                                fieldState: { invalid, error },
+                            }) => (
+                                <Field.Root
+                                    className="col-span-full mt-2"
+                                    invalid={invalid}
+                                    required
+                                >
+                                    <Checkbox.Root
+                                        name={name}
+                                        value={value}
+                                        onCheckedChange={(e) =>
+                                            onChange(e.checked)
+                                        }
+                                        onBlur={onBlur}
+                                    >
+                                        <Checkbox.Control ref={ref}>
+                                            <Checkbox.Indicator>
+                                                <CheckIcon />
+                                            </Checkbox.Indicator>
+                                        </Checkbox.Control>
+                                        <Checkbox.Label>
+                                            I have read and agreed to the Terms
+                                            of Service
+                                        </Checkbox.Label>
+                                        <Checkbox.HiddenInput />
 
-                                <Field.ErrorText>
-                                    {errors.tos_agreement}
-                                </Field.ErrorText>
-                            </Checkbox.Root>
-                        </Field.Root>
+                                        <Field.ErrorText>
+                                            {error?.message}
+                                        </Field.ErrorText>
+                                    </Checkbox.Root>
+                                </Field.Root>
+                            )}
+                        />
 
-                        <Field.Root
-                            className="col-span-full mt-2"
-                            invalid={!!errors.no_reserve_agreement}
-                            required
-                        >
-                            <Checkbox.Root name={"no_reserve_agreement"}>
-                                <Checkbox.Control>
-                                    <Checkbox.Indicator>
-                                        <CheckIcon />
-                                    </Checkbox.Indicator>
-                                </Checkbox.Control>
-                                <Checkbox.Label>
-                                    I agree that this form is not a way to
-                                    reserve commission slot, and the artist has
-                                    all rights to accept or decline it at their
-                                    discretion
-                                </Checkbox.Label>
-                                <Checkbox.HiddenInput
-                                    onChange={(e) =>
-                                        setData(
-                                            "no_reserve_agreement",
-                                            e.target.value
-                                        )
-                                    }
-                                />
+                        <Controller
+                            name="no_reserve_agreement"
+                            control={control}
+                            rules={{
+                                required: "Please agree to this term",
+                            }}
+                            render={({
+                                field: { name, ref, value, onBlur, onChange },
+                                fieldState: { invalid, error },
+                            }) => (
+                                <Field.Root
+                                    className="col-span-full mt-2"
+                                    invalid={invalid}
+                                    required
+                                >
+                                    <Checkbox.Root
+                                        name={name}
+                                        value={value}
+                                        onCheckedChange={(e) =>
+                                            onChange(e.checked)
+                                        }
+                                        onBlur={onBlur}
+                                    >
+                                        <Checkbox.Control ref={ref}>
+                                            <Checkbox.Indicator>
+                                                <CheckIcon />
+                                            </Checkbox.Indicator>
+                                        </Checkbox.Control>
+                                        <Checkbox.Label>
+                                            I agree that this form is not a way
+                                            to reserve commission slot, and the
+                                            artist has all rights to accept or
+                                            decline it at their discretion
+                                        </Checkbox.Label>
+                                        <Checkbox.HiddenInput />
 
-                                <Field.ErrorText className="basis-1">
-                                    {errors.no_reserve_agreement}
-                                </Field.ErrorText>
-                            </Checkbox.Root>
-                        </Field.Root>
+                                        <Field.ErrorText className="basis-1">
+                                            {error?.message}
+                                        </Field.ErrorText>
+                                    </Checkbox.Root>
+                                </Field.Root>
+                            )}
+                        />
 
                         <div className="col-span-full flex justify-end">
                             <Button
                                 type="submit"
-                                disabled={processing || !isDirty}
+                                disabled={isSubmitting || !isValid}
                             >
-                                {processing
-                                    ? wasSuccessful
-                                        ? "Success!"
-                                        : "Sending..."
-                                    : "Send"}
+                                {isSubmitting ? "Sending..." : "Send"}
                             </Button>
                         </div>
                     </div>

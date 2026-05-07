@@ -7,6 +7,7 @@ export {
     CommissionSteps,
     StepIconMapping,
 } from "./commission-step/commission-step"
+export { Dialog } from "./dialog/dialog"
 export { Field } from "./field/field"
 export { Fieldset } from "./fieldset/fieldset"
 export {

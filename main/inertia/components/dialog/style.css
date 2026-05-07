@@ -1,0 +1,58 @@
+[data-scope="dialog"] {
+    &[data-part="backdrop"] {
+        position: fixed;
+        inset: 0;
+        background: oklch(from var(--color-black) l c h / 0.3);
+        z-index: calc(var(--z-index-popover) + var(--layer-index, 0));
+
+        &[data-state="open"] {
+        }
+
+        &[data-state="closed"] {
+        }
+    }
+
+    &[data-part="positioner"] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        z-index: calc(var(--z-index-popover) + var(--layer-index, 0));
+        overscroll-behavior-y: none;
+        scrollbar-gutter: stable both-edge;
+    }
+
+    &[data-part="content"] {
+        --width-default: calc(var(--spacing) * 160);
+
+        position: relative;
+        width: var(--width-default);
+        max-width: calc(100vw - 6rem);
+        max-height: calc(100vh - 6rem);
+        border: 2px solid var(--color-border);
+        background: var(--color-white);
+        box-shadow: var(--shadow-md);
+        z-index: calc(var(--z-index-popover) + var(--layer-index, 0));
+        outline: 0;
+        translate: calc(-1 * var(--scrollbar-width, 0px) / 2) 0;
+
+        &[data-has-nested] {
+        }
+
+        &[data-state="open"] {
+        }
+
+        &[data-state="closed"] {
+        }
+    }
+
+    &[data-part="title"] {
+        font-size: var(--text-h5);
+        font-weight: var(--font-weight-bold);
+    }
+
+    &[data-part="description"] {
+        margin-block-start: calc(var(--spacing) * 3);
+    }
+}

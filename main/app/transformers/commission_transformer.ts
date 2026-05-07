@@ -1,4 +1,7 @@
 import Commission from "#models/commission"
+import CommissionPolicy from "#policies/commission_policy"
+import { inject } from "@adonisjs/core"
+import { HttpContext } from "@adonisjs/core/http"
 import { BaseTransformer } from "@adonisjs/core/transformers"
 import {
     CommissionStatus,
@@ -8,7 +11,10 @@ import {
 } from "@shellbaby/shared/types"
 
 export default class CommissionTransformer extends BaseTransformer<Commission> {
-    toObject() {
+    @inject()
+    async toObject({ bouncer }: HttpContext) {
+        const policy = bouncer.with(CommissionPolicy)
+
         return {
             ...this.pick(this.resource, [
                 "commissionNumber",
@@ -20,15 +26,24 @@ export default class CommissionTransformer extends BaseTransformer<Commission> {
             status: this.resource.status as CommissionStatus,
             refSheets: this.resource.refSheets as string[],
             paymentStatus: this.resource.paymentStatus as PaymentStatus,
+            permissions: {
+                delete: await policy.allows("delete", this.resource),
+            },
         }
     }
 
-    forBriefView() {
+    @inject()
+    async forBriefView({ bouncer }: HttpContext) {
+        const policy = bouncer.with(CommissionPolicy)
+
         return {
             ...this.pick(this.resource, ["commissionNumber", "createdAt"]),
             type: CommissionTypeMapping[this.resource.type as CommissionType],
             status: this.resource.status as CommissionStatus,
             paymentStatus: this.resource.paymentStatus as PaymentStatus,
+            permissions: {
+                delete: await policy.allows("delete", this.resource),
+            },
         }
     }
 }

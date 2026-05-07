@@ -20,7 +20,7 @@
     &[data-part="input"] {
         width: 100%;
         height: var(--input-height);
-        border: 1px solid var(--color-black-muted);
+        border: 1px solid var(--color-border);
         border-radius: var(--border-radius);
         outline: none;
         padding-inline: var(--input-p-inline);

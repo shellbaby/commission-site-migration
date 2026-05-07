@@ -20,6 +20,7 @@ declare module '@adonisjs/inertia/types' {
     'contact': ExtractProps<(typeof import('../../inertia/pages/contact.tsx'))['default']>
     'errors/commission-details': ExtractProps<(typeof import('../../inertia/pages/errors/commission-details.tsx'))['default']>
     'errors/not_found': ExtractProps<(typeof import('../../inertia/pages/errors/not_found.tsx'))['default']>
+    'errors/not-found/commission': ExtractProps<(typeof import('../../inertia/pages/errors/not-found/commission.tsx'))['default']>
     'errors/server_error': ExtractProps<(typeof import('../../inertia/pages/errors/server_error.tsx'))['default']>
     'errors/verification-failed': ExtractProps<(typeof import('../../inertia/pages/errors/verification-failed.tsx'))['default']>
     'form': ExtractProps<(typeof import('../../inertia/pages/form.tsx'))['default']>
@@ -28,6 +29,5 @@ declare module '@adonisjs/inertia/types' {
     'price': ExtractProps<(typeof import('../../inertia/pages/price.tsx'))['default']>
     'profile': ExtractProps<(typeof import('../../inertia/pages/profile.tsx'))['default']>
     'tos': ExtractProps<(typeof import('../../inertia/pages/tos.tsx'))['default']>
-    'errors/not-found/commission': ExtractProps<(typeof import('../../inertia/pages/errors/not-found/commission.tsx'))['default']>
   }
 }

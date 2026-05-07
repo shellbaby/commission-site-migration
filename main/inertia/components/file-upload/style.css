@@ -19,7 +19,7 @@
         gap: var(--dropzone-gap);
         min-height: var(--min-height);
         padding: var(--p-block) var(--p-inline);
-        border: 1px solid var(--color-black-muted);
+        border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         cursor: pointer;
         margin-top: calc(var(--spacing) * 1);
