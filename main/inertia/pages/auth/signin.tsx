@@ -5,7 +5,7 @@ import { Button, Checkbox, Field, PasswordInput } from "~/components"
 
 export default function Page() {
     return (
-        <div className="mx-auto max-w-md">
+        <div className="mx-auto min-w-md">
             <Head title="Sign In" />
 
             <h2 className="mb-12 text-center">Sign In</h2>
@@ -59,7 +59,10 @@ export default function Page() {
                                     </Checkbox.Root>
                                 </Field.Root>
 
-                                <Link route="link.home" className="font-bold">
+                                <Link
+                                    route="link.static.home"
+                                    className="font-bold"
+                                >
                                     Forgot Password?
                                 </Link>
                             </div>

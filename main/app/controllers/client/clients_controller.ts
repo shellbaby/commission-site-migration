@@ -5,6 +5,7 @@ import { signupValidator } from "#validators/client"
 import stringHelpers from "@adonisjs/core/helpers/string"
 import type { HttpContext } from "@adonisjs/core/http"
 import { signedUrlFor } from "@adonisjs/core/services/url_builder"
+import drive from "@adonisjs/drive/services/main"
 import mail from "@adonisjs/mail/services/main"
 
 export default class ClientsController {
@@ -37,14 +38,34 @@ export default class ClientsController {
             .where("email", client.email)
 
         if (commissions.length > 0) {
+            const disk = drive.use()
+            const clientUuid = client.clientUuid
+
+            const newFilePaths: string[] = []
+            const newFileUrls: string[] = []
+
             for (const commission of commissions) {
-                commission.clientUuid = client.clientUuid
+                const commissionUuid = commission.commissionUuid
+                const sourceFiles = commission.refSheetPaths as string[]
+
+                for (const source of sourceFiles) {
+                    const fileName = source.split("/").at(-1)
+                    const destination = `clients/${clientUuid}/commissions/${commissionUuid}/${fileName}`
+                    await disk.move(source, destination)
+                    newFilePaths.push(destination)
+                    const newFileUrl = await disk.getUrl(destination)
+                    newFileUrls.push(newFileUrl)
+                }
+
+                commission.clientUuid = clientUuid
+                commission.refSheetPaths = JSON.stringify(newFilePaths)
+                commission.refSheetUrls = JSON.stringify(newFileUrls)
                 await commission.save()
             }
         }
 
         const signedURL = signedUrlFor(
-            "link.emails.verify",
+            "link.email.verify",
             { uuid: client.clientUuid },
             {
                 expiresIn: "30m",
@@ -77,7 +98,7 @@ export default class ClientsController {
             }
         )
 
-        return response.redirect().toRoute("link.verify-instruction")
+        return response.redirect().toRoute("link.email.verify.instruction")
     }
 
     /**
@@ -100,14 +121,14 @@ export default class ClientsController {
     /**
      * Edit individual record
      */
-    async edit({ auth, inertia }: HttpContext) {
+    async edit({ inertia }: HttpContext) {
         return inertia.render("profile", {})
     }
 
     /**
      * Handle form submission for the edit action
      */
-    async update({ params, request }: HttpContext) {}
+    async update({ request }: HttpContext) {}
 
     /**
      * Delete record

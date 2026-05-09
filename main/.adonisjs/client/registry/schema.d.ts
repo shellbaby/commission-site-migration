@@ -19,7 +19,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.home': {
+  'link.static.home': {
     methods: ["GET","HEAD"]
     pattern: '/'
     types: {
@@ -31,7 +31,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.price': {
+  'link.static.price': {
     methods: ["GET","HEAD"]
     pattern: '/price'
     types: {
@@ -43,7 +43,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.tos': {
+  'link.static.tos': {
     methods: ["GET","HEAD"]
     pattern: '/tos'
     types: {
@@ -55,7 +55,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.gallery': {
+  'link.static.gallery': {
     methods: ["GET","HEAD"]
     pattern: '/gallery'
     types: {
@@ -67,7 +67,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.contact': {
+  'link.static.contact': {
     methods: ["GET","HEAD"]
     pattern: '/contact'
     types: {
@@ -79,9 +79,9 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.form': {
+  'link.commissions.create': {
     methods: ["GET","HEAD"]
-    pattern: '/form'
+    pattern: '/commissions/form'
     types: {
       body: {}
       paramsTuple: []
@@ -91,7 +91,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['create']>>>
     }
   }
-  'link.commissions': {
+  'link.commissions.auth.index': {
     methods: ["GET","HEAD"]
     pattern: '/commissions'
     types: {
@@ -103,19 +103,31 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['index']>>>
     }
   }
-  'link.commission-details': {
+  'link.commissions.auth.show': {
     methods: ["GET","HEAD"]
-    pattern: '/commissions/:commission_number'
+    pattern: '/commissions/:commission_uuid'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { commission_number: ParamValue }
+      params: { commission_uuid: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['show']>>>
     }
   }
-  'link.profile': {
+  'link.commissions.guest.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/commissions/guest/:commission_uuid'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { commission_uuid: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/guest/commissions_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/guest/commissions_controller').default['show']>>>
+    }
+  }
+  'link.clients.profile': {
     methods: ["GET","HEAD"]
     pattern: '/profile'
     types: {
@@ -127,7 +139,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['edit']>>>
     }
   }
-  'link.signin': {
+  'link.registration.signin': {
     methods: ["GET","HEAD"]
     pattern: '/signin'
     types: {
@@ -139,7 +151,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['create']>>>
     }
   }
-  'link.signin-alias': {
+  'link.registration.signin-alias': {
     methods: ["GET","HEAD"]
     pattern: '/sign-in'
     types: {
@@ -151,31 +163,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.signout': {
-    methods: ["GET","HEAD"]
-    pattern: '/signout'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
-    }
-  }
-  'link.signout-alias': {
-    methods: ["GET","HEAD"]
-    pattern: '/sign-out'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: unknown
-      errorResponse: unknown
-    }
-  }
-  'link.signup': {
+  'link.registration.signup': {
     methods: ["GET","HEAD"]
     pattern: '/signup'
     types: {
@@ -187,7 +175,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['create']>>>
     }
   }
-  'link.signup-alias': {
+  'link.registration.signup-alias': {
     methods: ["GET","HEAD"]
     pattern: '/sign-up'
     types: {
@@ -199,7 +187,7 @@ export interface Registry {
       errorResponse: unknown
     }
   }
-  'link.emails.verify': {
+  'link.email.verify': {
     methods: ["GET","HEAD"]
     pattern: '/verify/:uuid'
     types: {
@@ -211,7 +199,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/email/emails_controller').default['verify']>>>
     }
   }
-  'link.verify-instruction': {
+  'link.email.verify.instruction': {
     methods: ["GET","HEAD"]
     pattern: '/verify'
     types: {
@@ -248,12 +236,12 @@ export interface Registry {
     }
   }
   'client.clients.update': {
-    methods: ["PUT","PATCH"]
-    pattern: '/api/v1/clients/:id'
+    methods: ["PATCH"]
+    pattern: '/api/v1/clients'
     types: {
       body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      paramsTuple: []
+      params: {}
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['update']>>>
@@ -261,11 +249,11 @@ export interface Registry {
   }
   'client.clients.destroy': {
     methods: ["DELETE"]
-    pattern: '/api/v1/clients/:id'
+    pattern: '/api/v1/clients'
     types: {
       body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      paramsTuple: []
+      params: {}
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/client/clients_controller').default['destroy']>>>
@@ -285,14 +273,26 @@ export interface Registry {
   }
   'client.commissions.destroy': {
     methods: ["DELETE"]
-    pattern: '/api/v1/commissions/:commission_number'
+    pattern: '/api/v1/commissions/:commission_uuid'
     types: {
       body: {}
       paramsTuple: [ParamValue]
-      params: { commission_number: ParamValue }
+      params: { commission_uuid: ParamValue }
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['destroy']>>>
+    }
+  }
+  'guest.commissions.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/guest/commissions'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/commission').commissionValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/commission').commissionValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/guest/commissions_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/guest/commissions_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'auth.session.store': {
@@ -305,6 +305,18 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/client').signinValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'auth.session.destroy': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/auth/signout'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth/session_controller').default['destroy']>>>
     }
   }
 }

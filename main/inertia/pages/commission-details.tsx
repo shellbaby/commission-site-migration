@@ -35,12 +35,12 @@ export default function Page({ commission }: PageProps) {
         idea,
         notes,
         paymentStatus,
-        refSheets,
+        refSheetsUrls,
         status,
         type,
     } = commission
 
-    const refSheetImages = refSheetsToCarouselList(refSheets)
+    const refSheetImages = refSheetsToCarouselList(refSheetsUrls)
     const PaymentIcon = PaymentIconMapping[paymentStatus].icon
     const CommissionIcon = StepIconMapping[status].icon
 

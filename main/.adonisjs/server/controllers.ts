@@ -13,6 +13,9 @@ export const controllers = {
   },
   commission: {
     Commissions: () => import('#controllers/commission/commissions_controller'),
+    guest: {
+      Commissions: () => import('#controllers/commission/guest/commissions_controller'),
+    },
   },
   email: {
     Emails: () => import('#controllers/email/emails_controller'),

@@ -12,107 +12,101 @@ const routes = {
     tokens: [{"old":"/uploads/*","type":0,"val":"uploads","end":""},{"old":"/uploads/*","type":2,"val":"*","end":""}],
     types: placeholder as Registry['drive.fs.serve']['types'],
   },
-  'link.home': {
+  'link.static.home': {
     methods: ["GET","HEAD"],
     pattern: '/',
     tokens: [{"old":"/","type":0,"val":"/","end":""}],
-    types: placeholder as Registry['link.home']['types'],
+    types: placeholder as Registry['link.static.home']['types'],
   },
-  'link.price': {
+  'link.static.price': {
     methods: ["GET","HEAD"],
     pattern: '/price',
     tokens: [{"old":"/price","type":0,"val":"price","end":""}],
-    types: placeholder as Registry['link.price']['types'],
+    types: placeholder as Registry['link.static.price']['types'],
   },
-  'link.tos': {
+  'link.static.tos': {
     methods: ["GET","HEAD"],
     pattern: '/tos',
     tokens: [{"old":"/tos","type":0,"val":"tos","end":""}],
-    types: placeholder as Registry['link.tos']['types'],
+    types: placeholder as Registry['link.static.tos']['types'],
   },
-  'link.gallery': {
+  'link.static.gallery': {
     methods: ["GET","HEAD"],
     pattern: '/gallery',
     tokens: [{"old":"/gallery","type":0,"val":"gallery","end":""}],
-    types: placeholder as Registry['link.gallery']['types'],
+    types: placeholder as Registry['link.static.gallery']['types'],
   },
-  'link.contact': {
+  'link.static.contact': {
     methods: ["GET","HEAD"],
     pattern: '/contact',
     tokens: [{"old":"/contact","type":0,"val":"contact","end":""}],
-    types: placeholder as Registry['link.contact']['types'],
+    types: placeholder as Registry['link.static.contact']['types'],
   },
-  'link.form': {
+  'link.commissions.create': {
     methods: ["GET","HEAD"],
-    pattern: '/form',
-    tokens: [{"old":"/form","type":0,"val":"form","end":""}],
-    types: placeholder as Registry['link.form']['types'],
+    pattern: '/commissions/form',
+    tokens: [{"old":"/commissions/form","type":0,"val":"commissions","end":""},{"old":"/commissions/form","type":0,"val":"form","end":""}],
+    types: placeholder as Registry['link.commissions.create']['types'],
   },
-  'link.commissions': {
+  'link.commissions.auth.index': {
     methods: ["GET","HEAD"],
     pattern: '/commissions',
     tokens: [{"old":"/commissions","type":0,"val":"commissions","end":""}],
-    types: placeholder as Registry['link.commissions']['types'],
+    types: placeholder as Registry['link.commissions.auth.index']['types'],
   },
-  'link.commission-details': {
+  'link.commissions.auth.show': {
     methods: ["GET","HEAD"],
-    pattern: '/commissions/:commission_number',
-    tokens: [{"old":"/commissions/:commission_number","type":0,"val":"commissions","end":""},{"old":"/commissions/:commission_number","type":1,"val":"commission_number","end":""}],
-    types: placeholder as Registry['link.commission-details']['types'],
+    pattern: '/commissions/:commission_uuid',
+    tokens: [{"old":"/commissions/:commission_uuid","type":0,"val":"commissions","end":""},{"old":"/commissions/:commission_uuid","type":1,"val":"commission_uuid","end":""}],
+    types: placeholder as Registry['link.commissions.auth.show']['types'],
   },
-  'link.profile': {
+  'link.commissions.guest.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/commissions/guest/:commission_uuid',
+    tokens: [{"old":"/commissions/guest/:commission_uuid","type":0,"val":"commissions","end":""},{"old":"/commissions/guest/:commission_uuid","type":0,"val":"guest","end":""},{"old":"/commissions/guest/:commission_uuid","type":1,"val":"commission_uuid","end":""}],
+    types: placeholder as Registry['link.commissions.guest.show']['types'],
+  },
+  'link.clients.profile': {
     methods: ["GET","HEAD"],
     pattern: '/profile',
     tokens: [{"old":"/profile","type":0,"val":"profile","end":""}],
-    types: placeholder as Registry['link.profile']['types'],
+    types: placeholder as Registry['link.clients.profile']['types'],
   },
-  'link.signin': {
+  'link.registration.signin': {
     methods: ["GET","HEAD"],
     pattern: '/signin',
     tokens: [{"old":"/signin","type":0,"val":"signin","end":""}],
-    types: placeholder as Registry['link.signin']['types'],
+    types: placeholder as Registry['link.registration.signin']['types'],
   },
-  'link.signin-alias': {
+  'link.registration.signin-alias': {
     methods: ["GET","HEAD"],
     pattern: '/sign-in',
     tokens: [{"old":"/sign-in","type":0,"val":"sign-in","end":""}],
-    types: placeholder as Registry['link.signin-alias']['types'],
+    types: placeholder as Registry['link.registration.signin-alias']['types'],
   },
-  'link.signout': {
-    methods: ["GET","HEAD"],
-    pattern: '/signout',
-    tokens: [{"old":"/signout","type":0,"val":"signout","end":""}],
-    types: placeholder as Registry['link.signout']['types'],
-  },
-  'link.signout-alias': {
-    methods: ["GET","HEAD"],
-    pattern: '/sign-out',
-    tokens: [{"old":"/sign-out","type":0,"val":"sign-out","end":""}],
-    types: placeholder as Registry['link.signout-alias']['types'],
-  },
-  'link.signup': {
+  'link.registration.signup': {
     methods: ["GET","HEAD"],
     pattern: '/signup',
     tokens: [{"old":"/signup","type":0,"val":"signup","end":""}],
-    types: placeholder as Registry['link.signup']['types'],
+    types: placeholder as Registry['link.registration.signup']['types'],
   },
-  'link.signup-alias': {
+  'link.registration.signup-alias': {
     methods: ["GET","HEAD"],
     pattern: '/sign-up',
     tokens: [{"old":"/sign-up","type":0,"val":"sign-up","end":""}],
-    types: placeholder as Registry['link.signup-alias']['types'],
+    types: placeholder as Registry['link.registration.signup-alias']['types'],
   },
-  'link.emails.verify': {
+  'link.email.verify': {
     methods: ["GET","HEAD"],
     pattern: '/verify/:uuid',
     tokens: [{"old":"/verify/:uuid","type":0,"val":"verify","end":""},{"old":"/verify/:uuid","type":1,"val":"uuid","end":""}],
-    types: placeholder as Registry['link.emails.verify']['types'],
+    types: placeholder as Registry['link.email.verify']['types'],
   },
-  'link.verify-instruction': {
+  'link.email.verify.instruction': {
     methods: ["GET","HEAD"],
     pattern: '/verify',
     tokens: [{"old":"/verify","type":0,"val":"verify","end":""}],
-    types: placeholder as Registry['link.verify-instruction']['types'],
+    types: placeholder as Registry['link.email.verify.instruction']['types'],
   },
   'client.clients.store': {
     methods: ["POST"],
@@ -127,15 +121,15 @@ const routes = {
     types: placeholder as Registry['client.clients.show']['types'],
   },
   'client.clients.update': {
-    methods: ["PUT","PATCH"],
-    pattern: '/api/v1/clients/:id',
-    tokens: [{"old":"/api/v1/clients/:id","type":0,"val":"api","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"clients","end":""},{"old":"/api/v1/clients/:id","type":1,"val":"id","end":""}],
+    methods: ["PATCH"],
+    pattern: '/api/v1/clients',
+    tokens: [{"old":"/api/v1/clients","type":0,"val":"api","end":""},{"old":"/api/v1/clients","type":0,"val":"v1","end":""},{"old":"/api/v1/clients","type":0,"val":"clients","end":""}],
     types: placeholder as Registry['client.clients.update']['types'],
   },
   'client.clients.destroy': {
     methods: ["DELETE"],
-    pattern: '/api/v1/clients/:id',
-    tokens: [{"old":"/api/v1/clients/:id","type":0,"val":"api","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/clients/:id","type":0,"val":"clients","end":""},{"old":"/api/v1/clients/:id","type":1,"val":"id","end":""}],
+    pattern: '/api/v1/clients',
+    tokens: [{"old":"/api/v1/clients","type":0,"val":"api","end":""},{"old":"/api/v1/clients","type":0,"val":"v1","end":""},{"old":"/api/v1/clients","type":0,"val":"clients","end":""}],
     types: placeholder as Registry['client.clients.destroy']['types'],
   },
   'client.commissions.store': {
@@ -146,15 +140,27 @@ const routes = {
   },
   'client.commissions.destroy': {
     methods: ["DELETE"],
-    pattern: '/api/v1/commissions/:commission_number',
-    tokens: [{"old":"/api/v1/commissions/:commission_number","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:commission_number","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:commission_number","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:commission_number","type":1,"val":"commission_number","end":""}],
+    pattern: '/api/v1/commissions/:commission_uuid',
+    tokens: [{"old":"/api/v1/commissions/:commission_uuid","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:commission_uuid","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:commission_uuid","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:commission_uuid","type":1,"val":"commission_uuid","end":""}],
     types: placeholder as Registry['client.commissions.destroy']['types'],
+  },
+  'guest.commissions.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/guest/commissions',
+    tokens: [{"old":"/api/v1/guest/commissions","type":0,"val":"api","end":""},{"old":"/api/v1/guest/commissions","type":0,"val":"v1","end":""},{"old":"/api/v1/guest/commissions","type":0,"val":"guest","end":""},{"old":"/api/v1/guest/commissions","type":0,"val":"commissions","end":""}],
+    types: placeholder as Registry['guest.commissions.store']['types'],
   },
   'auth.session.store': {
     methods: ["POST"],
     pattern: '/api/v1/auth/signin',
     tokens: [{"old":"/api/v1/auth/signin","type":0,"val":"api","end":""},{"old":"/api/v1/auth/signin","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/signin","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/signin","type":0,"val":"signin","end":""}],
     types: placeholder as Registry['auth.session.store']['types'],
+  },
+  'auth.session.destroy': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/auth/signout',
+    tokens: [{"old":"/api/v1/auth/signout","type":0,"val":"api","end":""},{"old":"/api/v1/auth/signout","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/signout","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/signout","type":0,"val":"signout","end":""}],
+    types: placeholder as Registry['auth.session.destroy']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

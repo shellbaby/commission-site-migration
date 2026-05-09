@@ -16,11 +16,11 @@ type PageProps = InertiaProps<{
 export default function Page({ commissions }: PageProps) {
     const router = useRouter()
 
-    const handleDelete = async (commission_number: string) => {
+    const handleDelete = async (commission_uuid: string) => {
         router.visit(
             {
                 route: "client.commissions.destroy",
-                routeParams: { commission_number },
+                routeParams: { commission_uuid },
             },
             {
                 only: ["commissions"],
@@ -46,7 +46,7 @@ export default function Page({ commissions }: PageProps) {
                             </span>
 
                             <Button asChild>
-                                <Link route="link.form">
+                                <Link route="link.commissions.create">
                                     <PlusIcon className="mr-3" />
                                     Add Commission
                                 </Link>
@@ -56,6 +56,7 @@ export default function Page({ commissions }: PageProps) {
                 ) : (
                     commissions.map((commission) => {
                         const {
+                            commissionUuid,
                             commissionNumber,
                             createdAt,
                             type,
@@ -93,10 +94,9 @@ export default function Page({ commissions }: PageProps) {
 
                                     <Button asChild variant="outline">
                                         <Link
-                                            route="link.commission-details"
+                                            route="link.commissions.auth.show"
                                             routeParams={{
-                                                commission_number:
-                                                    commissionNumber,
+                                                commission_uuid: commissionUuid,
                                             }}
                                         >
                                             View Commission

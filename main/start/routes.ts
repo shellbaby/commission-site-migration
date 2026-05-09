@@ -11,72 +11,118 @@ import { controllers } from "#generated/controllers"
 import router from "@adonisjs/core/services/router"
 import { middleware } from "./kernel.ts"
 
+router.where("commission_uuid", router.matchers.uuid())
+
 router
     .group(() => {
         // Static links //
-        router.on("/").renderInertia("home", {}).as("home")
-        router.on("/price").renderInertia("price", {}).as("price")
-        router.on("/tos").renderInertia("tos", {}).as("tos")
-        router.on("/gallery").renderInertia("gallery", {}).as("gallery")
-        router.on("/contact").renderInertia("contact", {}).as("contact")
+        router
+            .group(() => {
+                router.on("/").renderInertia("home", {}).as("home")
+                router.on("/price").renderInertia("price", {}).as("price")
+                router.on("/tos").renderInertia("tos", {}).as("tos")
+                router.on("/gallery").renderInertia("gallery", {}).as("gallery")
+                router.on("/contact").renderInertia("contact", {}).as("contact")
+            })
+            .as("static")
 
         // Commission links //
         router
-            .get("/form", [controllers.commission.Commissions, "create"])
-            .as("form")
-        router
-            .get("/commissions", [controllers.commission.Commissions, "index"])
+            .group(() => {
+                router
+                    .get("/form", [
+                        controllers.commission.Commissions,
+                        "create",
+                    ])
+                    .as("create")
+
+                router
+                    .group(() => {
+                        router
+                            .get("/", [
+                                controllers.commission.Commissions,
+                                "index",
+                            ])
+                            .as("index")
+
+                        router
+                            .get("/:commission_uuid", [
+                                controllers.commission.Commissions,
+                                "show",
+                            ])
+                            .as("show")
+                    })
+                    .as("auth")
+                    .use(middleware.auth())
+
+                router
+                    .group(() => {
+                        router
+                            .get("/:commission_uuid", [
+                                controllers.commission.guest.Commissions,
+                                "show",
+                            ])
+                            .as("show")
+                    })
+                    .as("guest")
+                    .prefix("guest")
+                    .use(middleware.guest())
+            })
             .as("commissions")
-            .use(middleware.auth())
-        router
-            .get("/commissions/:commission_number", [
-                controllers.commission.Commissions,
-                "show",
-            ])
-            .as("commission-details")
+            .prefix("commissions")
 
         // Client-specific links //
         router
-            .get("/profile", [controllers.client.Clients, "edit"])
-            .as("profile")
+            .group(() => {
+                router
+                    .get("/profile", [controllers.client.Clients, "edit"])
+                    .as("profile")
+            })
+            .as("clients")
             .use(middleware.auth())
 
-        // Sign in/up/out links //
+        // Auth links //
         router
-            .get("/signin", [controllers.auth.Session, "create"])
-            .as("signin")
-            .use(middleware.guest())
-        router
-            .get("/sign-in", ({ response }) => {
-                return response.redirect().toRoute("link.signin")
-            })
-            .as("signin-alias")
+            .group(() => {
+                // Sign in //
+                router
+                    .get("/signin", [controllers.auth.Session, "create"])
+                    .as("signin")
+                router
+                    .get("/sign-in", ({ response }) => {
+                        return response
+                            .redirect()
+                            .toRoute("link.registration.signin")
+                    })
+                    .as("signin-alias")
 
-        router
-            .get("/signout", [controllers.auth.Session, "destroy"])
-            .as("signout")
-            .use(middleware.auth())
-        router
-            .get("sign-out", ({ response }) => {
-                return response.redirect().toRoute("link.signout")
+                // Sign up //
+                router
+                    .get("/signup", [controllers.client.Clients, "create"])
+                    .as("signup")
+                router
+                    .get("/sign-up", ({ response }) => {
+                        return response
+                            .redirect()
+                            .toRoute("link.registration.signup")
+                    })
+                    .as("signup-alias")
             })
-            .as("signout-alias")
-
-        router
-            .get("/signup", [controllers.client.Clients, "create"])
-            .as("signup")
+            .as("registration")
             .use(middleware.guest())
-        router
-            .get("/sign-up", ({ response }) => {
-                return response.redirect().toRoute("link.signup")
-            })
-            .as("signup-alias")
 
         // Email-related links //
-        router.get("/verify/:uuid", [controllers.email.Emails, "verify"])
         router
-            .get("/verify", [controllers.email.Emails, "show"])
-            .as("verify-instruction")
+            .group(() => {
+                router
+                    .get("/:uuid", [controllers.email.Emails, "verify"])
+                    .as("verify")
+                router
+                    .get("/", [controllers.email.Emails, "show"])
+                    .as("verify.instruction")
+            })
+            .as("email")
+            .prefix("verify")
     })
     .as("link")
 
@@ -86,18 +132,53 @@ router
             .group(() => {
                 router
                     .resource("clients", controllers.client.Clients)
-                    .except(["create", "edit", "index"])
-                    .use(["destroy", "show", "update"], middleware.auth())
+                    .except(["create", "edit", "index", "update", "destroy"])
+                    .use(["show"], middleware.auth())
+
+                router
+                    .group(() => {
+                        router.patch("clients", [
+                            controllers.client.Clients,
+                            "update",
+                        ])
+                        router.delete("clients", [
+                            controllers.client.Clients,
+                            "destroy",
+                        ])
+                    })
+                    .use(middleware.auth())
 
                 router
                     .resource("commissions", controllers.commission.Commissions)
                     .except(["create", "edit", "update", "show", "index"])
                     .params({
-                        commissions: "commission_number",
+                        commissions: "commission_uuid",
                     })
-                    .use(["destroy"], middleware.auth())
             })
             .as("client")
+
+        router
+            .group(() => {
+                router
+                    .resource(
+                        "commissions",
+                        controllers.commission.guest.Commissions
+                    )
+                    .except([
+                        "index",
+                        "create",
+                        "edit",
+                        "update",
+                        "destroy",
+                        "show",
+                    ])
+                    .params({
+                        commissions: "commission_uuid",
+                    })
+            })
+            .as("guest")
+            .prefix("guest")
+        // .use(middleware.guest())
 
         // router
         //     .group(() => {
@@ -112,6 +193,10 @@ router
         router
             .group(() => {
                 router.post("signin", [controllers.auth.Session, "store"])
+
+                router
+                    .get("signout", [controllers.auth.Session, "destroy"])
+                    .use(middleware.auth())
             })
             .prefix("auth")
             .as("auth")

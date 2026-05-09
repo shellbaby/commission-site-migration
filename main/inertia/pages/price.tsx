@@ -73,10 +73,10 @@ export default function Page() {
                     * Please carefully read the ToS first before commissioning *
                 </p>
                 <div className="mt-9 grid grid-cols-2 gap-6">
-                    <Link route="link.tos">
+                    <Link route="link.static.tos">
                         <Button width="full">Terms of Service</Button>
                     </Link>
-                    <Link route="link.form">
+                    <Link route="link.commissions.create">
                         <Button width="full">Commission Form</Button>
                     </Link>
                 </div>
@@ -99,7 +99,7 @@ export default function Page() {
                 <div id="commission-request">
                     <Link
                         href={urlFor(
-                            "link.form",
+                            "link.commissions.create",
                             {},
                             { qs: { type: "emote" } }
                         )}
@@ -124,7 +124,7 @@ export default function Page() {
                 <div id="commission-request">
                     <Link
                         href={urlFor(
-                            "link.form",
+                            "link.commissions.create",
                             {},
                             { qs: { type: "half-body" } }
                         )}
@@ -150,7 +150,7 @@ export default function Page() {
                 <div id="commission-request">
                     <Link
                         href={urlFor(
-                            "link.form",
+                            "link.commissions.create",
                             {},
                             { qs: { type: "full-body" } }
                         )}
@@ -178,7 +178,7 @@ export default function Page() {
                 <div id="commission-request">
                     <Link
                         href={urlFor(
-                            "link.form",
+                            "link.commissions.create",
                             {},
                             { qs: { type: "ref-sheet" } }
                         )}

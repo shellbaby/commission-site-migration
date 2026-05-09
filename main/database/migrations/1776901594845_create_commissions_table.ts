@@ -17,7 +17,8 @@ export default class extends BaseSchema {
             table.increments("id").primary().unique()
 
             // Generate at backend //
-            table.string("commission_number").notNullable().unique()
+            table.uuid("commission_uuid").notNullable().unique()
+            table.string("commission_number").notNullable()
             table
                 .uuid("client_uuid")
                 .references("client_uuid")
@@ -39,7 +40,8 @@ export default class extends BaseSchema {
                 })
                 .notNullable()
             table.text("idea").notNullable()
-            table.jsonb("ref_sheets").notNullable()
+            table.jsonb("ref_sheet_urls").notNullable()
+            table.jsonb("ref_sheet_paths").notNullable()
             table.text("notes").nullable()
             table
                 .enum("status", CommissionStatus, {

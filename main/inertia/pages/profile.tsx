@@ -36,10 +36,7 @@ export default function Page({ client }: PageProps) {
                         </div>
                     </div>
 
-                    <Form
-                        route="client.clients.update"
-                        routeParams={{ id: client?.clientUuid ?? "" }}
-                    >
+                    <Form route="client.clients.update">
                         {({ errors, processing, wasSuccessful, isDirty }) => (
                             <>
                                 <div className="mb-9 grid grid-cols-4 gap-6">

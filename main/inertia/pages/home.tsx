@@ -50,7 +50,7 @@ export default function Page() {
                         <p>
                             Wanna commission me? Here&#39;s
                             <Mark>
-                                <Link route="link.price">how</Link>
+                                <Link route="link.static.price">how</Link>
                             </Mark>
                             !
                         </p>

@@ -21,6 +21,6 @@ export default class SessionController {
 
     async destroy({ auth, response }: HttpContext) {
         await auth.use("web").logout()
-        return response.redirect().toRoute("link.signin")
+        return response.redirect().toRoute("link.registration.signin")
     }
 }

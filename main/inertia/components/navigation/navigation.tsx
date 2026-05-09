@@ -1,4 +1,4 @@
-import { Link } from "@adonisjs/inertia/react"
+import { Link, useRouter } from "@adonisjs/inertia/react"
 import { Menu } from "@ark-ui/react/menu"
 import { CaretDownIcon } from "@phosphor-icons/react"
 import { Avatar } from "~/components"
@@ -7,10 +7,17 @@ import { InertiaProps } from "~/types"
 type ComponentProps = Pick<InertiaProps, "client">
 
 export const Navigation = ({ client }: ComponentProps) => {
+    const router = useRouter()
+    const handleSignout = () => {
+        router.visit({
+            route: "auth.session.destroy",
+        })
+    }
+
     return (
         <nav className="flex h-20 items-center justify-between [&_a]:hover:underline">
             <Link
-                route="link.home"
+                route="link.static.home"
                 className="flex h-full items-center focus-visible:font-bold focus-visible:underline focus-visible:outline-none"
             >
                 home
@@ -35,19 +42,23 @@ export const Navigation = ({ client }: ComponentProps) => {
                                 <Menu.ArrowTip />
                             </Menu.Arrow>
                             <Menu.Item asChild value="prices">
-                                <Link route="link.price">prices</Link>
+                                <Link route="link.static.price">prices</Link>
                             </Menu.Item>
                             <Menu.Item asChild value="tos">
-                                <Link route="link.tos">terms of service</Link>
+                                <Link route="link.static.tos">
+                                    terms of service
+                                </Link>
                             </Menu.Item>
                             <Menu.Item asChild value="form">
-                                <Link route="link.form">commission form</Link>
+                                <Link route="link.commissions.create">
+                                    commission form
+                                </Link>
                             </Menu.Item>
                         </Menu.Content>
                     </Menu.Positioner>
                 </Menu.Root>
-                <Link route="link.gallery">gallery</Link>
-                <Link route="link.contact">contact</Link>
+                <Link route="link.static.gallery">gallery</Link>
+                <Link route="link.static.contact">contact</Link>
 
                 {client ? (
                     <Menu.Root
@@ -77,23 +88,26 @@ export const Navigation = ({ client }: ComponentProps) => {
                                     <Menu.ArrowTip />
                                 </Menu.Arrow>
                                 <Menu.Item value="profile" asChild>
-                                    <Link route="link.profile">
+                                    <Link route="link.clients.profile">
                                         my profile
                                     </Link>
                                 </Menu.Item>
                                 <Menu.Item value="commissions" asChild>
-                                    <Link route="link.commissions">
+                                    <Link route="link.commissions.auth.index">
                                         my commissions
                                     </Link>
                                 </Menu.Item>
-                                <Menu.Item value="sign-out" asChild>
-                                    <Link route="link.signout">sign out</Link>
+                                <Menu.Item
+                                    value="sign-out"
+                                    onClick={handleSignout}
+                                >
+                                    sign out
                                 </Menu.Item>
                             </Menu.Content>
                         </Menu.Positioner>
                     </Menu.Root>
                 ) : (
-                    <Link route="link.signin">sign in</Link>
+                    <Link route="link.registration.signin">sign in</Link>
                 )}
             </div>
         </nav>

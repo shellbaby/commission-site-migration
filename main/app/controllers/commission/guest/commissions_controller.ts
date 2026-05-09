@@ -1,52 +1,28 @@
 import Commission from "#models/commission"
 import CommissionTransformer from "#transformers/commission_transformer"
 import { commissionValidator } from "#validators/commission"
+import { base64 } from "@adonisjs/core/helpers"
+import string from "@adonisjs/core/helpers/string"
 import type { HttpContext } from "@adonisjs/core/http"
 import drive from "@adonisjs/drive/services/main"
 import { faker } from "@faker-js/faker"
-import { CommissionCode, CommissionType } from "@shellbaby/shared/types"
-
-import CommissionPolicy from "#policies/commission_policy"
-import string from "@adonisjs/core/helpers/string"
+import { CommissionCode } from "@shellbaby/shared/types"
 
 export default class CommissionsController {
     /**
-     * Display a list of resource
+     * NOT ALLOWED - Display a list of resource
      */
-    async index({ auth, inertia }: HttpContext) {
-        const client = auth.getUserOrFail()
-
-        if (client) {
-            const { clientUuid } = client
-            const commissions = await Commission.query().where(
-                "clientUuid",
-                clientUuid
-            )
-            return inertia.render("commission-history", {
-                commissions:
-                    CommissionTransformer.transform(commissions).useVariant(
-                        "forBriefView"
-                    ),
-            })
-        }
-    }
+    async index({}: HttpContext) {}
 
     /**
-     * Display form to create a new record
+     * REUSE FROM THE OTHER ONE - Display form to create a new record
      */
-    async create({ inertia, request }: HttpContext) {
-        const commType = request.input("type")
-        const cleanedCommType = CommissionType.includes(commType)
-            ? commType
-            : undefined
-
-        return inertia.render("form", { commType: cleanedCommType })
-    }
+    async create({}: HttpContext) {}
 
     /**
      * Handle form submission for the create action
      */
-    async store({ request, response, auth, session }: HttpContext) {
+    async store({ request, response, session }: HttpContext) {
         const { ref_sheets, commission_type, ...data } =
             await request.validateUsing(commissionValidator)
 
@@ -55,15 +31,15 @@ export default class CommissionsController {
             return response.badRequest()
         }
 
-        const client = auth.getUserOrFail()
-
         const commissionNumber = `${CommissionCode[commission_type]}${faker.string.numeric(7)}`
         const commissionUuid = string.uuid()
 
         const fileURLs: string[] = []
         const filePaths: string[] = []
 
-        const rootPath = `clients/${client.clientUuid}/commissions/${commissionUuid}`
+        const encodedEmail = base64.urlEncode(data.email)
+
+        const rootPath = `guests/${encodedEmail}/commissions/${commissionUuid}`
 
         for (const file of ref_sheets) {
             const randomAdj = faker.word.adjective({
@@ -87,30 +63,30 @@ export default class CommissionsController {
             commissionNumber,
             commissionUuid,
             type: commission_type,
-            clientUuid: client ? client.clientUuid : null,
+            clientUuid: null,
             refSheetUrls: JSON.stringify(fileURLs),
-            refSheetPaths: JSON.stringify(filePaths),
+            refSheetPaths:JSON.stringify(filePaths)
         })
 
         session.flash("success", "Commission created!")
-        return response.redirect().toRoute("link.commissions.auth.index")
+        return response
+            .redirect()
+            .status(303)
+            .toRoute("link.commissions.guest.show", {
+                commission_uuid: commissionUuid,
+            })
     }
 
     /**
      * Show individual record
      */
-    async show({ params, inertia, bouncer, response }: HttpContext) {
+    async show({ params, inertia, response }: HttpContext) {
         const commissionUuid = params.commission_uuid
         const commission = await Commission.query()
             .where("commission_uuid", commissionUuid)
             .first()
 
         if (!commission) {
-            response.notFound()
-            return inertia.render("errors/not-found/commission", {})
-        }
-
-        if (await bouncer.with(CommissionPolicy).denies("show", commission)) {
             response.notFound()
             return inertia.render("errors/not-found/commission", {})
         }
@@ -122,34 +98,17 @@ export default class CommissionsController {
     }
 
     /**
-     * Edit individual record
+     * NOT ALLOWED - Edit individual record
      */
     async edit({ params }: HttpContext) {}
 
     /**
-     * Handle form submission for the edit action
+     * NOT ALLOWED - Handle form submission for the edit action
      */
     async update({ params, request }: HttpContext) {}
 
     /**
-     * Delete record
+     * NOT ALLOWED - Delete record
      */
-    async destroy({ params, response, bouncer }: HttpContext) {
-        const commissionNumber = params.commission_number
-
-        const commission = await Commission.query()
-            .where("commission_number", commissionNumber)
-            .first()
-
-        if (!commission) {
-            return response.redirect().status(303).back()
-        }
-
-        if (await bouncer.with(CommissionPolicy).denies("delete", commission)) {
-            return response.redirect().status(303).back()
-        }
-
-        await commission.delete()
-        return response.redirect().status(303).back()
-    }
+    async destroy({ params }: HttpContext) {}
 }

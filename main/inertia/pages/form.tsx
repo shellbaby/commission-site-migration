@@ -1,5 +1,5 @@
 import { useRouter } from "@adonisjs/inertia/react"
-import { Head, useForm as useInertiaForm } from "@inertiajs/react"
+import { Head } from "@inertiajs/react"
 import { CaretUpDownIcon, CheckIcon, XIcon } from "@phosphor-icons/react"
 import { type CommissionType } from "@shellbaby/shared/types"
 import { Controller, useForm } from "react-hook-form"
@@ -96,8 +96,6 @@ export default function Page({ commType, client }: PageProps) {
         },
     })
 
-    const {} = useInertiaForm<FormValues>()
-
     const fileUploadContext = useFileUpload({
         maxFiles: 5,
         maxFileSize: _MAX_FILE_SIZE,
@@ -105,15 +103,17 @@ export default function Page({ commType, client }: PageProps) {
     })
 
     const router = useRouter()
-    const onSubmit = handleSubmit(async (data) => {
+    const onSubmit = handleSubmit(async (values) => {
         return new Promise((resolve) => {
             router.visit(
                 {
-                    route: "client.commissions.store",
+                    route: client
+                        ? "client.commissions.store"
+                        : "guest.commissions.store",
                 },
                 {
                     data: {
-                        ...data,
+                        ...values,
                     },
                     onSuccess: () => resolve("success"),
                     onError: () => resolve("error"),

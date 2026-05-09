@@ -5,87 +5,86 @@ type ParamValue = string | number | bigint | boolean
 export type ScannedRoutes = {
   ALL: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
-    'link.home': { paramsTuple?: []; params?: {} }
-    'link.price': { paramsTuple?: []; params?: {} }
-    'link.tos': { paramsTuple?: []; params?: {} }
-    'link.gallery': { paramsTuple?: []; params?: {} }
-    'link.contact': { paramsTuple?: []; params?: {} }
-    'link.form': { paramsTuple?: []; params?: {} }
-    'link.commissions': { paramsTuple?: []; params?: {} }
-    'link.commission-details': { paramsTuple: [ParamValue]; params: {'commission_number': ParamValue} }
-    'link.profile': { paramsTuple?: []; params?: {} }
-    'link.signin': { paramsTuple?: []; params?: {} }
-    'link.signin-alias': { paramsTuple?: []; params?: {} }
-    'link.signout': { paramsTuple?: []; params?: {} }
-    'link.signout-alias': { paramsTuple?: []; params?: {} }
-    'link.signup': { paramsTuple?: []; params?: {} }
-    'link.signup-alias': { paramsTuple?: []; params?: {} }
-    'link.emails.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
-    'link.verify-instruction': { paramsTuple?: []; params?: {} }
+    'link.static.home': { paramsTuple?: []; params?: {} }
+    'link.static.price': { paramsTuple?: []; params?: {} }
+    'link.static.tos': { paramsTuple?: []; params?: {} }
+    'link.static.gallery': { paramsTuple?: []; params?: {} }
+    'link.static.contact': { paramsTuple?: []; params?: {} }
+    'link.commissions.create': { paramsTuple?: []; params?: {} }
+    'link.commissions.auth.index': { paramsTuple?: []; params?: {} }
+    'link.commissions.auth.show': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'link.commissions.guest.show': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'link.clients.profile': { paramsTuple?: []; params?: {} }
+    'link.registration.signin': { paramsTuple?: []; params?: {} }
+    'link.registration.signin-alias': { paramsTuple?: []; params?: {} }
+    'link.registration.signup': { paramsTuple?: []; params?: {} }
+    'link.registration.signup-alias': { paramsTuple?: []; params?: {} }
+    'link.email.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
+    'link.email.verify.instruction': { paramsTuple?: []; params?: {} }
     'client.clients.store': { paramsTuple?: []; params?: {} }
     'client.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.clients.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.clients.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'client.clients.update': { paramsTuple?: []; params?: {} }
+    'client.clients.destroy': { paramsTuple?: []; params?: {} }
     'client.commissions.store': { paramsTuple?: []; params?: {} }
-    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'commission_number': ParamValue} }
+    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'guest.commissions.store': { paramsTuple?: []; params?: {} }
     'auth.session.store': { paramsTuple?: []; params?: {} }
+    'auth.session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
-    'link.home': { paramsTuple?: []; params?: {} }
-    'link.price': { paramsTuple?: []; params?: {} }
-    'link.tos': { paramsTuple?: []; params?: {} }
-    'link.gallery': { paramsTuple?: []; params?: {} }
-    'link.contact': { paramsTuple?: []; params?: {} }
-    'link.form': { paramsTuple?: []; params?: {} }
-    'link.commissions': { paramsTuple?: []; params?: {} }
-    'link.commission-details': { paramsTuple: [ParamValue]; params: {'commission_number': ParamValue} }
-    'link.profile': { paramsTuple?: []; params?: {} }
-    'link.signin': { paramsTuple?: []; params?: {} }
-    'link.signin-alias': { paramsTuple?: []; params?: {} }
-    'link.signout': { paramsTuple?: []; params?: {} }
-    'link.signout-alias': { paramsTuple?: []; params?: {} }
-    'link.signup': { paramsTuple?: []; params?: {} }
-    'link.signup-alias': { paramsTuple?: []; params?: {} }
-    'link.emails.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
-    'link.verify-instruction': { paramsTuple?: []; params?: {} }
+    'link.static.home': { paramsTuple?: []; params?: {} }
+    'link.static.price': { paramsTuple?: []; params?: {} }
+    'link.static.tos': { paramsTuple?: []; params?: {} }
+    'link.static.gallery': { paramsTuple?: []; params?: {} }
+    'link.static.contact': { paramsTuple?: []; params?: {} }
+    'link.commissions.create': { paramsTuple?: []; params?: {} }
+    'link.commissions.auth.index': { paramsTuple?: []; params?: {} }
+    'link.commissions.auth.show': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'link.commissions.guest.show': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'link.clients.profile': { paramsTuple?: []; params?: {} }
+    'link.registration.signin': { paramsTuple?: []; params?: {} }
+    'link.registration.signin-alias': { paramsTuple?: []; params?: {} }
+    'link.registration.signup': { paramsTuple?: []; params?: {} }
+    'link.registration.signup-alias': { paramsTuple?: []; params?: {} }
+    'link.email.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
+    'link.email.verify.instruction': { paramsTuple?: []; params?: {} }
     'client.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'auth.session.destroy': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
-    'link.home': { paramsTuple?: []; params?: {} }
-    'link.price': { paramsTuple?: []; params?: {} }
-    'link.tos': { paramsTuple?: []; params?: {} }
-    'link.gallery': { paramsTuple?: []; params?: {} }
-    'link.contact': { paramsTuple?: []; params?: {} }
-    'link.form': { paramsTuple?: []; params?: {} }
-    'link.commissions': { paramsTuple?: []; params?: {} }
-    'link.commission-details': { paramsTuple: [ParamValue]; params: {'commission_number': ParamValue} }
-    'link.profile': { paramsTuple?: []; params?: {} }
-    'link.signin': { paramsTuple?: []; params?: {} }
-    'link.signin-alias': { paramsTuple?: []; params?: {} }
-    'link.signout': { paramsTuple?: []; params?: {} }
-    'link.signout-alias': { paramsTuple?: []; params?: {} }
-    'link.signup': { paramsTuple?: []; params?: {} }
-    'link.signup-alias': { paramsTuple?: []; params?: {} }
-    'link.emails.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
-    'link.verify-instruction': { paramsTuple?: []; params?: {} }
+    'link.static.home': { paramsTuple?: []; params?: {} }
+    'link.static.price': { paramsTuple?: []; params?: {} }
+    'link.static.tos': { paramsTuple?: []; params?: {} }
+    'link.static.gallery': { paramsTuple?: []; params?: {} }
+    'link.static.contact': { paramsTuple?: []; params?: {} }
+    'link.commissions.create': { paramsTuple?: []; params?: {} }
+    'link.commissions.auth.index': { paramsTuple?: []; params?: {} }
+    'link.commissions.auth.show': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'link.commissions.guest.show': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'link.clients.profile': { paramsTuple?: []; params?: {} }
+    'link.registration.signin': { paramsTuple?: []; params?: {} }
+    'link.registration.signin-alias': { paramsTuple?: []; params?: {} }
+    'link.registration.signup': { paramsTuple?: []; params?: {} }
+    'link.registration.signup-alias': { paramsTuple?: []; params?: {} }
+    'link.email.verify': { paramsTuple: [ParamValue]; params: {'uuid': ParamValue} }
+    'link.email.verify.instruction': { paramsTuple?: []; params?: {} }
     'client.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'auth.session.destroy': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'client.clients.store': { paramsTuple?: []; params?: {} }
     'client.commissions.store': { paramsTuple?: []; params?: {} }
+    'guest.commissions.store': { paramsTuple?: []; params?: {} }
     'auth.session.store': { paramsTuple?: []; params?: {} }
   }
-  PUT: {
-    'client.clients.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-  }
   PATCH: {
-    'client.clients.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'client.clients.update': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
-    'client.clients.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'commission_number': ParamValue} }
+    'client.clients.destroy': { paramsTuple?: []; params?: {} }
+    'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

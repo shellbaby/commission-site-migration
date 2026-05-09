@@ -6,7 +6,7 @@ export default class EmailsController {
         const statusCookie = request.encryptedCookie("signup_status")
 
         if (!statusCookie || statusCookie.status !== "pending") {
-            return response.redirect().toRoute("link.home")
+            return response.redirect().toRoute("link.static.home")
         }
 
         return inertia.render("auth/verify-email", {
@@ -27,7 +27,7 @@ export default class EmailsController {
 
             await auth.use("web").login(client)
             response.clearCookie("signup_status")
-            return response.redirect().withQs(false).toRoute("link.home")
+            return response.redirect().withQs(false).toRoute("link.static.home")
         } catch (error) {
             return inertia.render("errors/verification-failed", {})
         }

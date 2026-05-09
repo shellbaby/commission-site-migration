@@ -24,7 +24,7 @@ export default class CommissionTransformer extends BaseTransformer<Commission> {
             ]),
             type: CommissionTypeMapping[this.resource.type as CommissionType],
             status: this.resource.status as CommissionStatus,
-            refSheets: this.resource.refSheets as string[],
+            refSheetsUrls: this.resource.refSheetUrls as string[],
             paymentStatus: this.resource.paymentStatus as PaymentStatus,
             permissions: {
                 delete: await policy.allows("delete", this.resource),
@@ -37,7 +37,11 @@ export default class CommissionTransformer extends BaseTransformer<Commission> {
         const policy = bouncer.with(CommissionPolicy)
 
         return {
-            ...this.pick(this.resource, ["commissionNumber", "createdAt"]),
+            ...this.pick(this.resource, [
+                "commissionNumber",
+                "createdAt",
+                "commissionUuid",
+            ]),
             type: CommissionTypeMapping[this.resource.type as CommissionType],
             status: this.resource.status as CommissionStatus,
             paymentStatus: this.resource.paymentStatus as PaymentStatus,

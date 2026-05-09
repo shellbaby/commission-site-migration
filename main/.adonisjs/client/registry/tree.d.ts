@@ -8,25 +8,37 @@ export interface ApiDefinition {
     }
   }
   link: {
-    home: typeof routes['link.home']
-    price: typeof routes['link.price']
-    tos: typeof routes['link.tos']
-    gallery: typeof routes['link.gallery']
-    contact: typeof routes['link.contact']
-    form: typeof routes['link.form']
-    commissions: typeof routes['link.commissions']
-    commissionDetails: typeof routes['link.commission-details']
-    profile: typeof routes['link.profile']
-    signin: typeof routes['link.signin']
-    signinAlias: typeof routes['link.signin-alias']
-    signout: typeof routes['link.signout']
-    signoutAlias: typeof routes['link.signout-alias']
-    signup: typeof routes['link.signup']
-    signupAlias: typeof routes['link.signup-alias']
-    emails: {
-      verify: typeof routes['link.emails.verify']
+    static: {
+      home: typeof routes['link.static.home']
+      price: typeof routes['link.static.price']
+      tos: typeof routes['link.static.tos']
+      gallery: typeof routes['link.static.gallery']
+      contact: typeof routes['link.static.contact']
     }
-    verifyInstruction: typeof routes['link.verify-instruction']
+    commissions: {
+      create: typeof routes['link.commissions.create']
+      auth: {
+        index: typeof routes['link.commissions.auth.index']
+        show: typeof routes['link.commissions.auth.show']
+      }
+      guest: {
+        show: typeof routes['link.commissions.guest.show']
+      }
+    }
+    clients: {
+      profile: typeof routes['link.clients.profile']
+    }
+    registration: {
+      signin: typeof routes['link.registration.signin']
+      signinAlias: typeof routes['link.registration.signin-alias']
+      signup: typeof routes['link.registration.signup']
+      signupAlias: typeof routes['link.registration.signup-alias']
+    }
+    email: {
+      verify: typeof routes['link.email.verify'] & {
+        instruction: typeof routes['link.email.verify.instruction']
+      }
+    }
   }
   client: {
     clients: {
@@ -40,9 +52,15 @@ export interface ApiDefinition {
       destroy: typeof routes['client.commissions.destroy']
     }
   }
+  guest: {
+    commissions: {
+      store: typeof routes['guest.commissions.store']
+    }
+  }
   auth: {
     session: {
       store: typeof routes['auth.session.store']
+      destroy: typeof routes['auth.session.destroy']
     }
   }
 }

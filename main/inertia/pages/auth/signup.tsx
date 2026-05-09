@@ -5,7 +5,7 @@ import { Button, Field, PasswordInput } from "~/components"
 
 export default function Page() {
     return (
-        <div className="mx-auto max-w-md">
+        <div className="mx-auto min-w-md">
             <Head title="Sign Up" />
 
             <h2 className="mb-12 text-center">Sign Up</h2>
