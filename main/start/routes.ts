@@ -154,6 +154,7 @@ router
                     .params({
                         commissions: "commission_uuid",
                     })
+                    .use(["destroy"], middleware.auth())
             })
             .as("client")
 

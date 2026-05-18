@@ -1,7 +1,8 @@
 import { appUrl } from "#config/app"
 import Client from "#models/client"
 import Commission from "#models/commission"
-import { signupValidator } from "#validators/client"
+import ClientTransformer from "#transformers/client_transformer"
+import { editInfoValidator, signupValidator } from "#validators/client"
 import stringHelpers from "@adonisjs/core/helpers/string"
 import type { HttpContext } from "@adonisjs/core/http"
 import { signedUrlFor } from "@adonisjs/core/services/url_builder"
@@ -51,10 +52,15 @@ export default class ClientsController {
                 for (const source of sourceFiles) {
                     const fileName = source.split("/").at(-1)
                     const destination = `clients/${clientUuid}/commissions/${commissionUuid}/${fileName}`
-                    await disk.move(source, destination)
-                    newFilePaths.push(destination)
-                    const newFileUrl = await disk.getUrl(destination)
-                    newFileUrls.push(newFileUrl)
+
+                    try {
+                        await disk.move(source, destination)
+                        newFilePaths.push(destination)
+                        const newFileUrl = await disk.getUrl(destination)
+                        newFileUrls.push(newFileUrl)
+                    } catch (error) {
+                        continue
+                    }
                 }
 
                 commission.clientUuid = clientUuid
@@ -104,31 +110,35 @@ export default class ClientsController {
     /**
      * Show individual record
      */
-    async show({ response, auth }: HttpContext) {
-        // const client = auth.getUserOrFail()
-        // return response.ok<APIResponse<ShowClientDTO>>({
-        //     statusCode: HttpStatus.OK,
-        //     success: true,
-        //     data: {
-        //         email: client.email,
-        //         username: client.username,
-        //         uuid: client.clientUuid,
-        //         name: client.name ?? undefined,
-        //     },
-        // })
-    }
+    async show({ response, auth }: HttpContext) {}
 
     /**
      * Edit individual record
      */
-    async edit({ inertia }: HttpContext) {
-        return inertia.render("profile", {})
+    async edit({ inertia, auth }: HttpContext) {
+        const client = auth.user
+        return inertia.render("profile", {
+            updatedClient: ClientTransformer.transform(client!),
+        })
     }
 
     /**
      * Handle form submission for the edit action
      */
-    async update({ request }: HttpContext) {}
+    async update({ request, auth, session, response }: HttpContext) {
+        const client = auth.getUserOrFail()
+
+        const payload = await request.validateUsing(editInfoValidator)
+
+        await client
+            .merge({
+                ...payload,
+            })
+            .save()
+
+        session.flash("success", "Account updated successfully")
+        return response.redirect().status(303).back()
+    }
 
     /**
      * Delete record

@@ -46,6 +46,21 @@
             &:disabled {
                 background: var(--color-disabled);
             }
+
+            &:not(:disabled):is(:hover, :focus-visible) {
+                background: oklch(from var(--color) calc(l + 0.05) c h);
+            }
+
+            &:not(:disabled):is(:focus-visible) {
+                outline: 2px solid var(--color);
+                outline-offset: 1px;
+            }
+        }
+
+        &[data-variant="ghost"] {
+            &:not(:disabled):is(:hover, :focus-visible) {
+                background: oklch(from var(--color-black-muted) l c h);
+            }
         }
     }
 }

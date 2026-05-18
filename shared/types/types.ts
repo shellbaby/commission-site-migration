@@ -76,3 +76,6 @@ export const PaymentStatusMapping: Record<
     paid: "Paid",
     pending: "Pending",
 }
+
+export const CommissionContacts = ["telegram", "discord"] as const
+export type CommissionContacts = (typeof CommissionContacts)[number]

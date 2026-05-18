@@ -18,6 +18,7 @@ export default class CommissionTransformer extends BaseTransformer<Commission> {
         return {
             ...this.pick(this.resource, [
                 "commissionNumber",
+                "commissionUuid",
                 "createdAt",
                 "idea",
                 "notes",

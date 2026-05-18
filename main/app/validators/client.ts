@@ -6,26 +6,38 @@ const password = () =>
         .string()
         .regex(/^(?=.*[A-Za-z])(?=.*\d).{8,}$/)
         .confirmed()
-const username = () =>
+const username = () => vine.string().trim().maxLength(30)
+const usernameStrict = () =>
+    username()
+        .minLength(3)
+        .regex(/^[a-zA-Z0-9][a-zA-Z0-9_-]{2,29}$/)
+const name = () =>
     vine
         .string()
-        .trim()
-        .minLength(3)
-        .maxLength(30)
-        .regex(/^[a-zA-Z0-9][a-zA-Z0-9_-]{2,29}$/)
+        .maxLength(255)
+        .regex(/^[a-zA-Z0-9\s]{1,30}$/)
 
 export const signupValidator = vine.create({
-    username: username().unique({
+    username: usernameStrict().unique({
         table: "clients",
         column: "username",
     }),
-    email: email(),
+    email: email().unique({
+        table: "clients",
+        column: "email",
+    }),
     password: password(),
-    name: vine.string().maxLength(255).optional(),
+    name: name().optional(),
 })
 
 export const signinValidator = vine.create({
-    username: vine.string().trim().maxLength(30),
+    username: username(),
     password: vine.string(),
     remember_me: vine.boolean({ strict: false }).optional(),
+})
+
+export const editInfoValidator = vine.create({
+    name: name(),
+    username: usernameStrict(),
+    email: email(),
 })

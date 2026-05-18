@@ -1,13 +1,60 @@
-import { Form } from "@adonisjs/inertia/react"
+import { useRouter } from "@adonisjs/inertia/react"
+import { Data } from "@generated/data"
+import { Head } from "@inertiajs/react"
 import { CSSProperties } from "react"
+import { useForm } from "react-hook-form"
 import { Avatar, Button, Field } from "~/components"
 import { InertiaProps } from "~/types"
 
-type PageProps = InertiaProps
+interface FormValues {
+    username: string
+    name: string
+    email: string
+}
 
-export default function Page({ client }: PageProps) {
+type PageProps = InertiaProps<{ updatedClient: Data.Client }>
+export default function Page({ updatedClient, errors }: PageProps) {
+    const {
+        register,
+        formState: { isDirty, isSubmitting },
+        handleSubmit,
+    } = useForm<FormValues>({
+        defaultValues: {
+            email: updatedClient?.email,
+            name: updatedClient?.name ?? "",
+            username: updatedClient?.username,
+        },
+    })
+
+    const router = useRouter()
+    const handleUpdate = handleSubmit(async (values) => {
+        return new Promise((resolve) => {
+            router.visit(
+                {
+                    route: "client.clients.update",
+                },
+                {
+                    data: {
+                        ...values,
+                    },
+                    only: ["updatedClient"],
+                    errorBag: "info",
+                    onError: () => resolve("error"),
+                    onSuccess: () => resolve("success"),
+                    onFinish: () => resolve("finish"),
+                }
+            )
+        })
+    })
+
+    const infoErrorBag =
+        errors.info && typeof errors.info === "object"
+            ? (errors.info as Record<string, string>)
+            : undefined
+
     return (
         <>
+            <Head title="Profile" />
             <section className="grid grid-cols-3 gap-3">
                 <h6>Personal Information</h6>
                 <div className="col-span-2">
@@ -36,73 +83,86 @@ export default function Page({ client }: PageProps) {
                         </div>
                     </div>
 
-                    <Form route="client.clients.update">
-                        {({ errors, processing, wasSuccessful, isDirty }) => (
-                            <>
-                                <div className="mb-9 grid grid-cols-4 gap-6">
-                                    <Field.Root className="col-span-2">
-                                        <Field.Label>Name</Field.Label>
-                                        <Field.Input
-                                            name="name"
-                                            defaultValue={client?.name ?? ""}
-                                        />
-                                    </Field.Root>
-
-                                    <Field.Root className="col-span-2">
-                                        <Field.Label>Username</Field.Label>
-                                        <Field.Input
-                                            name="username"
-                                            defaultValue={client?.username}
-                                        />
-                                    </Field.Root>
-
-                                    <Field.Root className="col-span-full">
-                                        <Field.Label>Email</Field.Label>
-                                        <Field.Input
-                                            name="email"
-                                            defaultValue={client?.email}
-                                        />
-                                    </Field.Root>
-                                </div>
-                                <Button
-                                    type="submit"
-                                    disabled={processing || !isDirty}
+                    <form onSubmit={handleUpdate}>
+                        <>
+                            <div className="mb-9 grid grid-cols-4 gap-6">
+                                <Field.Root
+                                    className="col-span-2"
+                                    invalid={!!infoErrorBag?.name}
                                 >
-                                    {processing
-                                        ? wasSuccessful
-                                            ? "Success!"
-                                            : "Saving..."
-                                        : "Save"}
-                                </Button>
-                            </>
-                        )}
-                    </Form>
+                                    <Field.Label>Name</Field.Label>
+                                    <Field.Input {...register("name")} />
+                                    <Field.ErrorText>
+                                        {infoErrorBag?.name}
+                                    </Field.ErrorText>
+                                </Field.Root>
+
+                                <Field.Root
+                                    className="col-span-2"
+                                    invalid={!!infoErrorBag?.username}
+                                >
+                                    <Field.Label>Username</Field.Label>
+                                    <Field.Input {...register("username")} />
+                                    <Field.ErrorText>
+                                        {infoErrorBag?.username}
+                                    </Field.ErrorText>
+                                </Field.Root>
+
+                                <Field.Root
+                                    className="col-span-full"
+                                    invalid={!!infoErrorBag?.email}
+                                >
+                                    <Field.Label>Email</Field.Label>
+                                    <Field.Input {...register("email")} />
+                                    <Field.ErrorText>
+                                        {infoErrorBag?.email}
+                                    </Field.ErrorText>
+                                </Field.Root>
+                            </div>
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting || !isDirty}
+                            >
+                                {isSubmitting ? "Saving..." : "Save"}
+                            </Button>
+                        </>
+                    </form>
                 </div>
             </section>
 
             <hr className="my-12" />
 
             <section className="grid grid-cols-3 gap-3">
-                <h6>Change Password</h6>
+                <h6>Password</h6>
                 <form className="col-span-2">
-                    <div className="mb-9 grid grid-cols-4 gap-6">
-                        <Field.Root className="col-span-full">
-                            <Field.Label>Current Password</Field.Label>
-                            <Field.Input />
-                        </Field.Root>
+                    <div className="grid grid-cols-4 gap-6">
+                        <div className="col-span-full">
+                            <p>Forgot your password? Reset here</p>
+                        </div>
 
-                        <Field.Root className="col-span-full">
-                            <Field.Label>New Password</Field.Label>
-                            <Field.Input />
-                        </Field.Root>
+                        <form className="col-span-full">
+                            <h6 className="mb-3">Change Password</h6>
 
-                        <Field.Root className="col-span-full">
-                            <Field.Label>Confirm Password</Field.Label>
-                            <Field.Input />
-                        </Field.Root>
+                            <div className="mb-9 flex flex-col gap-6">
+                                <Field.Root className="col-span-full">
+                                    <Field.Label>Current Password</Field.Label>
+                                    <Field.Input />
+                                </Field.Root>
+
+                                <Field.Root className="col-span-full">
+                                    <Field.Label>New Password</Field.Label>
+                                    <Field.Input />
+                                </Field.Root>
+
+                                <Field.Root className="col-span-full">
+                                    <Field.Label>Confirm Password</Field.Label>
+                                    <Field.Input />
+                                </Field.Root>
+                            </div>
+
+                            <Button type="submit">Save</Button>
+                        </form>
                     </div>
-
-                    <Button type="submit">Save</Button>
                 </form>
             </section>
 

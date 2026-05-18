@@ -1,9 +1,21 @@
 import { Form, Link } from "@adonisjs/inertia/react"
 import { Head } from "@inertiajs/react"
 import { CheckIcon, EyeClosedIcon, EyeIcon } from "@phosphor-icons/react"
+import { useForm } from "react-hook-form"
 import { Button, Checkbox, Field, PasswordInput } from "~/components"
 
+interface FormValues {
+    username: string
+    password: string
+    remember_me: boolean
+}
+
 export default function Page() {
+    const {
+        register,
+        formState: { isValid, errors: RHFErrors },
+    } = useForm<FormValues>()
+
     return (
         <div className="mx-auto min-w-md">
             <Head title="Sign In" />
@@ -19,7 +31,11 @@ export default function Page() {
                         <>
                             <Field.Root required invalid={!!errors.username}>
                                 <Field.Label>Username</Field.Label>
-                                <Field.Input name="username" />
+                                <Field.Input
+                                    {...register("username", {
+                                        required: true,
+                                    })}
+                                />
                                 <Field.ErrorText>
                                     {errors.username}
                                 </Field.ErrorText>
@@ -29,7 +45,11 @@ export default function Page() {
                                 <Field.Label>Password</Field.Label>
                                 <PasswordInput.Root autoComplete="current-password">
                                     <PasswordInput.Control>
-                                        <PasswordInput.Input name="password" />
+                                        <PasswordInput.Input
+                                            {...register("password", {
+                                                required: true,
+                                            })}
+                                        />
                                         <PasswordInput.VisibilityTrigger>
                                             <PasswordInput.Indicator
                                                 fallback={<EyeClosedIcon />}
@@ -55,7 +75,9 @@ export default function Page() {
                                         <Checkbox.Label>
                                             Remember Me
                                         </Checkbox.Label>
-                                        <Checkbox.HiddenInput name="remember_me" />
+                                        <Checkbox.HiddenInput
+                                            {...register("remember_me")}
+                                        />
                                     </Checkbox.Root>
                                 </Field.Root>
 
@@ -68,7 +90,7 @@ export default function Page() {
                             </div>
                             <Button
                                 type="submit"
-                                disabled={processing || !isDirty}
+                                disabled={processing || !isValid}
                             >
                                 {processing ? "Signing In..." : "Sign In"}
                             </Button>

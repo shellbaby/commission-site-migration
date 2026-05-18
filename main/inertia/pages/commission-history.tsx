@@ -1,10 +1,13 @@
 import { Link, useRouter } from "@adonisjs/inertia/react"
 import { Data } from "@generated/data"
 import { PlusIcon } from "@phosphor-icons/react"
+import { HttpStatus } from "@shellbaby/shared/http-status"
 import {
     CommissionStatusMapping,
     PaymentStatusMapping,
 } from "@shellbaby/shared/types"
+import { useState } from "react"
+import { client } from "~/client"
 import { Button, Dialog, Portal, StepIconMapping } from "~/components"
 import { InertiaProps } from "~/types"
 import { readableDate } from "~/utils/datetime"
@@ -14,18 +17,40 @@ type PageProps = InertiaProps<{
     commissions: Data.Commission.Variants["forBriefView"][]
 }>
 export default function Page({ commissions }: PageProps) {
+    const [errorMsg, setErrorMsg] = useState("")
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [isProcesssing, setIsProcessing] = useState(false)
+
+    const delay = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms))
+
     const router = useRouter()
 
     const handleDelete = async (commission_uuid: string) => {
-        router.visit(
-            {
-                route: "client.commissions.destroy",
-                routeParams: { commission_uuid },
-            },
-            {
-                only: ["commissions"],
-            }
-        )
+        setIsProcessing(true)
+
+        const [[_, error]] = await Promise.all([
+            await client.api.client.commissions
+                .destroy({ params: { commission_uuid } })
+                .safe(),
+            delay(1000),
+        ])
+
+        setIsProcessing(false)
+
+        if (error?.isStatus(HttpStatus.NOT_FOUND)) {
+            setErrorMsg("Commission not found")
+            return
+        }
+
+        if (error?.isStatus(HttpStatus.FORBIDDEN)) {
+            setErrorMsg("Deletion of this commission is not allowed")
+            return
+        }
+
+        setIsSuccess(true)
+        await delay(500)
+        router.visit({ route: "link.commissions.auth.index" })
     }
 
     return (
@@ -151,7 +176,7 @@ export default function Page({ commissions }: PageProps) {
                                         </p>
                                     </div>
 
-                                    <div className="flex flex-1 items-end justify-end">
+                                    {/* <div className="flex flex-1 items-end justify-end">
                                         {permissions.delete && (
                                             <Dialog.Root role="alertdialog">
                                                 <Dialog.Trigger asChild>
@@ -181,6 +206,14 @@ export default function Page({ commissions }: PageProps) {
                                                                         commissionNumber
                                                                     }
                                                                 </Dialog.Description>
+                                                                {errorMsg && (
+                                                                    <p className="text-error mt-3 text-sm font-bold">
+                                                                        Error:{" "}
+                                                                        {
+                                                                            errorMsg
+                                                                        }
+                                                                    </p>
+                                                                )}
                                                             </div>
 
                                                             <div className="flex justify-end gap-3 bg-[oklch(from_var(--color-black)_l_c_h/.12)] px-6 py-3">
@@ -192,14 +225,26 @@ export default function Page({ commissions }: PageProps) {
                                                                     </Button>
                                                                 </Dialog.CloseTrigger>
                                                                 <Button
-                                                                    color="var(--color-error)"
+                                                                    color={
+                                                                        isSuccess
+                                                                            ? "var(--color-success)"
+                                                                            : "var(--color-error)"
+                                                                    }
+                                                                    disabled={
+                                                                        isProcesssing ||
+                                                                        isSuccess
+                                                                    }
                                                                     onClick={() =>
                                                                         handleDelete(
-                                                                            commissionNumber
+                                                                            commissionUuid
                                                                         )
                                                                     }
                                                                 >
-                                                                    Delete
+                                                                    {isProcesssing
+                                                                        ? "Deleting..."
+                                                                        : isSuccess
+                                                                          ? "Success"
+                                                                          : "Delete"}
                                                                 </Button>
                                                             </div>
                                                         </Dialog.Content>
@@ -207,7 +252,7 @@ export default function Page({ commissions }: PageProps) {
                                                 </Portal>
                                             </Dialog.Root>
                                         )}
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         )

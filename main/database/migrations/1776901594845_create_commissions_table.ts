@@ -26,6 +26,8 @@ export default class extends BaseSchema {
                 .onDelete("CASCADE")
                 .nullable()
                 .index()
+            table.jsonb("ref_sheet_urls").notNullable()
+            table.jsonb("ref_sheet_paths").notNullable()
             table.timestamp("created_at", { useTz: true }).notNullable()
             table.timestamp("updated_at", { useTz: true }).nullable()
 
@@ -39,9 +41,8 @@ export default class extends BaseSchema {
                     existingType: false,
                 })
                 .notNullable()
+            table.jsonb("contacts").nullable()
             table.text("idea").notNullable()
-            table.jsonb("ref_sheet_urls").notNullable()
-            table.jsonb("ref_sheet_paths").notNullable()
             table.text("notes").nullable()
             table
                 .enum("status", CommissionStatus, {
@@ -50,6 +51,7 @@ export default class extends BaseSchema {
                     existingType: false,
                 })
                 .defaultTo("pending")
+                .notNullable()
             table
                 .enum("payment_status", PaymentStatus, {
                     useNative: true,
@@ -57,6 +59,7 @@ export default class extends BaseSchema {
                     existingType: false,
                 })
                 .defaultTo("pending")
+                .notNullable()
             table.boolean("tos_agreement").notNullable()
             table.boolean("no_reserve_agreement").notNullable()
         })

@@ -9,7 +9,7 @@ export default class extends BaseSchema {
 
             // From frontend //
             table.string("username", 30).notNullable().unique()
-            table.string("email", 255).notNullable()
+            table.string("email", 255).notNullable().unique()
             table.string("name", 255).nullable()
             table.string("password", 255).notNullable()
 

@@ -93,7 +93,6 @@ export default class CommissionsController {
         })
 
         session.flash("success", "Commission created!")
-        return response.redirect().toRoute("link.commissions.auth.index")
     }
 
     /**
@@ -135,21 +134,21 @@ export default class CommissionsController {
      * Delete record
      */
     async destroy({ params, response, bouncer }: HttpContext) {
-        const commissionNumber = params.commission_number
+        const commissionUuid = params.commission_uuid
 
         const commission = await Commission.query()
-            .where("commission_number", commissionNumber)
+            .where("commission_uuid", commissionUuid)
             .first()
 
         if (!commission) {
-            return response.redirect().status(303).back()
+            return response.notFound()
         }
 
         if (await bouncer.with(CommissionPolicy).denies("delete", commission)) {
-            return response.redirect().status(303).back()
+            return response.forbidden()
         }
 
         await commission.delete()
-        return response.redirect().status(303).back()
+        return response.noContent()
     }
 }

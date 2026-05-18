@@ -1,9 +1,19 @@
-import { CommissionType } from "@shellbaby/shared/types"
-import vine from "@vinejs/vine"
+import { CommissionContacts, CommissionType } from "@shellbaby/shared/types"
+import vine, { VineString } from "@vinejs/vine"
+
+const contact = () => vine.string().maxLength(50)
 
 export const commissionValidator = vine.create({
-    name: vine.string().maxLength(255).trim(),
+    name: vine
+        .string()
+        .maxLength(30)
+        .regex(/^[a-zA-Z0-9\s]{1,30}$/)
+        .trim(),
     email: vine.string().email().normalizeEmail().trim().maxLength(255),
+    contacts: vine.object<Record<CommissionContacts, VineString>>({
+        telegram: contact(),
+        discord: contact(),
+    }),
     commission_type: vine.enum(CommissionType),
     idea: vine.string().trim(),
     ref_sheets: vine.array(

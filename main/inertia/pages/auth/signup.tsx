@@ -1,9 +1,42 @@
 import { Form } from "@adonisjs/inertia/react"
 import { Head } from "@inertiajs/react"
 import { EyeClosedIcon, EyeIcon } from "@phosphor-icons/react"
+import { useForm, useFormState, useWatch } from "react-hook-form"
 import { Button, Field, PasswordInput } from "~/components"
 
+interface FormValues {
+    username: string
+    email: string
+    name: string
+    password: string
+    password_confirmation: string
+}
+
 export default function Page() {
+    const {
+        register,
+        formState: { isValid, errors: RHFErrors },
+        control,
+        trigger,
+    } = useForm<FormValues>()
+
+    const { touchedFields } = useFormState({ control })
+
+    const password = useWatch({
+        control,
+        name: "password",
+    })
+
+    const passwordInput = register("password", {
+        required: "Please enter your password",
+    })
+
+    const passwordConfirmationInput = register("password_confirmation", {
+        validate: {
+            match: (value) => password === value || "Passwords do not match",
+        },
+    })
+
     return (
         <div className="mx-auto min-w-md">
             <Head title="Sign Up" />
@@ -15,11 +48,15 @@ export default function Page() {
                     className="flex flex-col gap-6"
                     route="client.clients.store"
                 >
-                    {({ errors, processing, wasSuccessful, isDirty }) => (
+                    {({ errors, processing, wasSuccessful }) => (
                         <>
                             <Field.Root required invalid={!!errors.username}>
                                 <Field.Label>Username</Field.Label>
-                                <Field.Input name="username" />
+                                <Field.Input
+                                    {...register("username", {
+                                        required: true,
+                                    })}
+                                />
                                 <Field.ErrorText>
                                     {errors.username}
                                 </Field.ErrorText>
@@ -36,7 +73,11 @@ export default function Page() {
 
                             <Field.Root required invalid={!!errors.email}>
                                 <Field.Label>Email</Field.Label>
-                                <Field.Input name="email" />
+                                <Field.Input
+                                    {...register("email", {
+                                        required: true,
+                                    })}
+                                />
                                 <Field.ErrorText>
                                     {errors.email}
                                 </Field.ErrorText>
@@ -48,16 +89,29 @@ export default function Page() {
                                 </Field.Label>
                                 <Field.Input
                                     placeholder="Name / Nickname"
-                                    name="name"
+                                    {...register("name")}
                                 />
                                 <Field.ErrorText>{errors.name}</Field.ErrorText>
                             </Field.Root>
 
-                            <Field.Root required invalid={!!errors.password}>
+                            <Field.Root
+                                required
+                                invalid={
+                                    !!errors.password || !!RHFErrors.password
+                                }
+                            >
                                 <Field.Label>Password</Field.Label>
                                 <PasswordInput.Root
                                     autoComplete="new-password"
-                                    name="password"
+                                    {...passwordInput}
+                                    onChange={async (e) => {
+                                        await passwordInput.onChange(e)
+                                        if (
+                                            touchedFields.password_confirmation
+                                        ) {
+                                            trigger("password_confirmation")
+                                        }
+                                    }}
                                 >
                                     <PasswordInput.Control>
                                         <PasswordInput.Input />
@@ -71,7 +125,8 @@ export default function Page() {
                                     </PasswordInput.Control>
                                 </PasswordInput.Root>
                                 <Field.ErrorText>
-                                    {errors.password}
+                                    {errors.password ||
+                                        RHFErrors.password?.message}
                                 </Field.ErrorText>
                                 <Field.HelperText asChild>
                                     <ul className="[&>li]:mt-0!">
@@ -86,12 +141,23 @@ export default function Page() {
 
                             <Field.Root
                                 required
-                                invalid={!!errors.password_confirmation}
+                                invalid={
+                                    !!errors.password_confirmation ||
+                                    !!RHFErrors.password_confirmation
+                                }
                             >
                                 <Field.Label>Confirm Password</Field.Label>
                                 <PasswordInput.Root ignorePasswordManagers>
                                     <PasswordInput.Control>
-                                        <PasswordInput.Input name="password_confirmation" />
+                                        <PasswordInput.Input
+                                            {...passwordConfirmationInput}
+                                            onChange={async (e) => {
+                                                await passwordConfirmationInput.onChange(
+                                                    e
+                                                )
+                                                trigger("password_confirmation")
+                                            }}
+                                        />
                                         <PasswordInput.VisibilityTrigger>
                                             <PasswordInput.Indicator
                                                 fallback={<EyeClosedIcon />}
@@ -102,13 +168,15 @@ export default function Page() {
                                     </PasswordInput.Control>
                                 </PasswordInput.Root>
                                 <Field.ErrorText>
-                                    {errors.password_confirmation}
+                                    {errors.password_confirmation ||
+                                        RHFErrors.password_confirmation
+                                            ?.message}
                                 </Field.ErrorText>
                             </Field.Root>
 
                             <Button
                                 className="mt-3"
-                                disabled={processing || !isDirty}
+                                disabled={processing || !isValid}
                                 type="submit"
                                 color={
                                     wasSuccessful

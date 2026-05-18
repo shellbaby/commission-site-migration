@@ -10,13 +10,4 @@ export default class ClientTransformer extends BaseTransformer<Client> {
             "clientUuid",
         ])
     }
-
-    DTOClientSignup() {
-        return this.pick(this.resource, [
-            "username",
-            "name",
-            "email",
-            "password",
-        ])
-    }
 }
