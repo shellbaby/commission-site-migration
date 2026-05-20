@@ -23,4 +23,7 @@ export const controllers = {
   page: {
     Pages: () => import('#controllers/page/pages_controller'),
   },
+  password: {
+    Password: () => import('#controllers/password/password_controller'),
+  },
 }

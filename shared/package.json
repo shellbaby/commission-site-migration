@@ -8,6 +8,7 @@
         "./api-response": "./api-response.ts",
         "./types": "./types/types.ts",
         "./types/util": "./types/util.ts",
-        "./types/client": "./types/client.ts"
+        "./types/client": "./types/client.ts",
+        "./types/password": "./types/password.ts"
     }
 }

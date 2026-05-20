@@ -1,24 +1,29 @@
-import { useRouter } from "@adonisjs/inertia/react"
+import { Link, useRouter } from "@adonisjs/inertia/react"
 import { Data } from "@generated/data"
 import { Head } from "@inertiajs/react"
+import { CheckIcon, EyeClosedIcon, EyeIcon } from "@phosphor-icons/react"
+import { PasswordRegExp } from "@shellbaby/shared/types/password"
 import { CSSProperties } from "react"
-import { useForm } from "react-hook-form"
-import { Avatar, Button, Field } from "~/components"
+import { useForm, useFormState, useWatch } from "react-hook-form"
+import { Avatar, Button, Checkbox, Field, PasswordInput } from "~/components"
 import { InertiaProps } from "~/types"
 
-interface FormValues {
+interface InfoFormValues {
     username: string
     name: string
     email: string
 }
 
+interface PasswordFormValues {
+    password_current: string
+    password: string
+    password_confirmation: string
+    sign_out_all: boolean
+}
+
 type PageProps = InertiaProps<{ updatedClient: Data.Client }>
 export default function Page({ updatedClient, errors }: PageProps) {
-    const {
-        register,
-        formState: { isDirty, isSubmitting },
-        handleSubmit,
-    } = useForm<FormValues>({
+    const infoForm = useForm<InfoFormValues>({
         defaultValues: {
             email: updatedClient?.email,
             name: updatedClient?.name ?? "",
@@ -26,8 +31,35 @@ export default function Page({ updatedClient, errors }: PageProps) {
         },
     })
 
+    const passwordForm = useForm<PasswordFormValues>()
+
+    const passwordFormState = useFormState({ control: passwordForm.control })
+
+    const newPassword = useWatch({
+        control: passwordForm.control,
+        name: "password",
+    })
+
+    const newPasswordInput = passwordForm.register("password", {
+        required: "Please enter your password",
+        pattern: {
+            value: PasswordRegExp,
+            message: "Password is not secure enough",
+        },
+    })
+
+    const conformationPasswordInput = passwordForm.register(
+        "password_confirmation",
+        {
+            validate: {
+                match: (value) =>
+                    newPassword === value || "Passwords do not match",
+            },
+        }
+    )
+
     const router = useRouter()
-    const handleUpdate = handleSubmit(async (values) => {
+    const handleUpdate = infoForm.handleSubmit(async (values) => {
         return new Promise((resolve) => {
             router.visit(
                 {
@@ -47,9 +79,31 @@ export default function Page({ updatedClient, errors }: PageProps) {
         })
     })
 
+    const handlePasswordChange = passwordForm.handleSubmit(async (values) => {
+        return new Promise((resolve) => {
+            router.visit(
+                {
+                    route: "client.password.update",
+                },
+                {
+                    data: { ...values },
+                    errorBag: "password",
+                    onError: () => resolve("error"),
+                    onSuccess: () => resolve("success"),
+                    onFinish: () => resolve("finish"),
+                }
+            )
+        })
+    })
+
     const infoErrorBag =
         errors.info && typeof errors.info === "object"
             ? (errors.info as Record<string, string>)
+            : undefined
+
+    const passwordErrorBag =
+        errors.password && typeof errors.password === "object"
+            ? (errors.password as Record<string, string>)
             : undefined
 
     return (
@@ -91,7 +145,9 @@ export default function Page({ updatedClient, errors }: PageProps) {
                                     invalid={!!infoErrorBag?.name}
                                 >
                                     <Field.Label>Name</Field.Label>
-                                    <Field.Input {...register("name")} />
+                                    <Field.Input
+                                        {...infoForm.register("name")}
+                                    />
                                     <Field.ErrorText>
                                         {infoErrorBag?.name}
                                     </Field.ErrorText>
@@ -102,7 +158,9 @@ export default function Page({ updatedClient, errors }: PageProps) {
                                     invalid={!!infoErrorBag?.username}
                                 >
                                     <Field.Label>Username</Field.Label>
-                                    <Field.Input {...register("username")} />
+                                    <Field.Input
+                                        {...infoForm.register("username")}
+                                    />
                                     <Field.ErrorText>
                                         {infoErrorBag?.username}
                                     </Field.ErrorText>
@@ -113,7 +171,9 @@ export default function Page({ updatedClient, errors }: PageProps) {
                                     invalid={!!infoErrorBag?.email}
                                 >
                                     <Field.Label>Email</Field.Label>
-                                    <Field.Input {...register("email")} />
+                                    <Field.Input
+                                        {...infoForm.register("email")}
+                                    />
                                     <Field.ErrorText>
                                         {infoErrorBag?.email}
                                     </Field.ErrorText>
@@ -121,9 +181,14 @@ export default function Page({ updatedClient, errors }: PageProps) {
                             </div>
                             <Button
                                 type="submit"
-                                disabled={isSubmitting || !isDirty}
+                                disabled={
+                                    infoForm.formState.isSubmitting ||
+                                    !infoForm.formState.isDirty
+                                }
                             >
-                                {isSubmitting ? "Saving..." : "Save"}
+                                {infoForm.formState.isSubmitting
+                                    ? "Saving..."
+                                    : "Save"}
                             </Button>
                         </>
                     </form>
@@ -134,36 +199,168 @@ export default function Page({ updatedClient, errors }: PageProps) {
 
             <section className="grid grid-cols-3 gap-3">
                 <h6>Password</h6>
-                <form className="col-span-2">
-                    <div className="grid grid-cols-4 gap-6">
+                <div className="col-span-2">
+                    <div className="grid grid-cols-4 gap-9">
                         <div className="col-span-full">
-                            <p>Forgot your password? Reset here</p>
+                            <h6>
+                                Forgot your password?{" "}
+                                <Link
+                                    route="link.static.home"
+                                    className="underline"
+                                >
+                                    Reset here
+                                </Link>
+                            </h6>
                         </div>
 
-                        <form className="col-span-full">
+                        <form
+                            className="col-span-full"
+                            onSubmit={handlePasswordChange}
+                        >
                             <h6 className="mb-3">Change Password</h6>
 
                             <div className="mb-9 flex flex-col gap-6">
-                                <Field.Root className="col-span-full">
+                                <Field.Root
+                                    className="col-span-full"
+                                    invalid={
+                                        !!passwordErrorBag?.password_current
+                                    }
+                                >
                                     <Field.Label>Current Password</Field.Label>
-                                    <Field.Input />
+                                    <PasswordInput.Root
+                                        autoComplete="current-password"
+                                        {...passwordForm.register(
+                                            "password_current"
+                                        )}
+                                    >
+                                        <PasswordInput.Control>
+                                            <PasswordInput.Input />
+                                            <PasswordInput.VisibilityTrigger>
+                                                <PasswordInput.Indicator
+                                                    fallback={<EyeClosedIcon />}
+                                                >
+                                                    <EyeIcon />
+                                                </PasswordInput.Indicator>
+                                            </PasswordInput.VisibilityTrigger>
+                                        </PasswordInput.Control>
+                                    </PasswordInput.Root>
                                 </Field.Root>
 
-                                <Field.Root className="col-span-full">
+                                <Field.Root
+                                    className="col-span-full"
+                                    invalid={
+                                        !!passwordForm.formState.errors
+                                            .password ||
+                                        !!passwordErrorBag?.password_new
+                                    }
+                                >
                                     <Field.Label>New Password</Field.Label>
-                                    <Field.Input />
+                                    <PasswordInput.Root
+                                        autoComplete="new-password"
+                                        {...newPasswordInput}
+                                        onChange={async (e) => {
+                                            await newPasswordInput.onChange(e)
+                                            passwordForm.trigger("password")
+                                            if (
+                                                passwordFormState.touchedFields
+                                                    .password_confirmation
+                                            ) {
+                                                passwordForm.trigger(
+                                                    "password_confirmation"
+                                                )
+                                            }
+                                        }}
+                                    >
+                                        <PasswordInput.Control>
+                                            <PasswordInput.Input />
+                                            <PasswordInput.VisibilityTrigger>
+                                                <PasswordInput.Indicator
+                                                    fallback={<EyeClosedIcon />}
+                                                >
+                                                    <EyeIcon />
+                                                </PasswordInput.Indicator>
+                                            </PasswordInput.VisibilityTrigger>
+                                        </PasswordInput.Control>
+                                    </PasswordInput.Root>
+
+                                    <Field.ErrorText>
+                                        {passwordForm.formState.errors.password
+                                            ?.message ||
+                                            passwordErrorBag?.password_new}
+                                    </Field.ErrorText>
                                 </Field.Root>
 
-                                <Field.Root className="col-span-full">
+                                <Field.Root
+                                    className="col-span-full"
+                                    invalid={
+                                        !!passwordForm.formState.errors
+                                            .password_confirmation
+                                    }
+                                >
                                     <Field.Label>Confirm Password</Field.Label>
-                                    <Field.Input />
+                                    <PasswordInput.Root
+                                        ignorePasswordManagers
+                                        {...conformationPasswordInput}
+                                        onChange={async (e) => {
+                                            await conformationPasswordInput.onChange(
+                                                e
+                                            )
+                                            passwordForm.trigger(
+                                                "password_confirmation"
+                                            )
+                                        }}
+                                    >
+                                        <PasswordInput.Control>
+                                            <PasswordInput.Input />
+                                            <PasswordInput.VisibilityTrigger>
+                                                <PasswordInput.Indicator
+                                                    fallback={<EyeClosedIcon />}
+                                                >
+                                                    <EyeIcon />
+                                                </PasswordInput.Indicator>
+                                            </PasswordInput.VisibilityTrigger>
+                                        </PasswordInput.Control>
+                                    </PasswordInput.Root>
+
+                                    <Field.ErrorText>
+                                        {
+                                            passwordForm.formState.errors
+                                                .password_confirmation?.message
+                                        }
+                                    </Field.ErrorText>
                                 </Field.Root>
+
+                                <Checkbox.Root>
+                                    <Checkbox.Control>
+                                        <Checkbox.Indicator>
+                                            <CheckIcon />
+                                        </Checkbox.Indicator>
+                                    </Checkbox.Control>
+                                    <Checkbox.Label>
+                                        Sign out all sessions
+                                    </Checkbox.Label>
+                                    <Checkbox.HiddenInput
+                                        {...passwordForm.register(
+                                            "sign_out_all"
+                                        )}
+                                    />
+                                </Checkbox.Root>
                             </div>
 
-                            <Button type="submit">Save</Button>
+                            <Button
+                                type="submit"
+                                disabled={
+                                    passwordForm.formState.isSubmitting ||
+                                    !passwordForm.formState.isValid
+                                }
+                            >
+                                {passwordForm.formState.isSubmitting
+                                    ? "...Saving"
+                                    : "Save"}
+                            </Button>
                         </form>
                     </div>
-                </form>
+                </div>
             </section>
 
             <hr className="my-12" />
@@ -176,7 +373,9 @@ export default function Page({ updatedClient, errors }: PageProps) {
                         your personal information and commission requests will
                         be gone permanently. This action is not reversible.
                     </p>
-                    <Button>Yes, delete my account</Button>
+                    <Button color="var(--color-error)">
+                        Yes, delete my account
+                    </Button>
                 </div>
             </section>
         </>

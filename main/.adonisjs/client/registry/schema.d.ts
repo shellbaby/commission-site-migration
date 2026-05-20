@@ -19,6 +19,18 @@ export interface Registry {
       errorResponse: unknown
     }
   }
+  'link._dev.email/password_change': {
+    methods: ["GET","HEAD"]
+    pattern: '/_dev/email/password_change'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
   'link.static.home': {
     methods: ["GET","HEAD"]
     pattern: '/'
@@ -281,6 +293,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commission/commissions_controller').default['destroy']>>>
+    }
+  }
+  'client.password.update': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/password'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/password').updateValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/password').updateValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/password/password_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/password/password_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'guest.commissions.store': {

@@ -9,5 +9,8 @@
         "source.addMissingImports": "explicit",
         "source.fixAll": "explicit"
     },
-    "eslint.validate": ["json", "typescriptreact"]
+    "eslint.validate": ["json", "typescriptreact"],
+    "[edge]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    }
 }

@@ -12,6 +12,12 @@ const routes = {
     tokens: [{"old":"/uploads/*","type":0,"val":"uploads","end":""},{"old":"/uploads/*","type":2,"val":"*","end":""}],
     types: placeholder as Registry['drive.fs.serve']['types'],
   },
+  'link._dev.email/password_change': {
+    methods: ["GET","HEAD"],
+    pattern: '/_dev/email/password_change',
+    tokens: [{"old":"/_dev/email/password_change","type":0,"val":"_dev","end":""},{"old":"/_dev/email/password_change","type":0,"val":"email","end":""},{"old":"/_dev/email/password_change","type":0,"val":"password_change","end":""}],
+    types: placeholder as Registry['link._dev.email/password_change']['types'],
+  },
   'link.static.home': {
     methods: ["GET","HEAD"],
     pattern: '/',
@@ -143,6 +149,12 @@ const routes = {
     pattern: '/api/v1/commissions/:commission_uuid',
     tokens: [{"old":"/api/v1/commissions/:commission_uuid","type":0,"val":"api","end":""},{"old":"/api/v1/commissions/:commission_uuid","type":0,"val":"v1","end":""},{"old":"/api/v1/commissions/:commission_uuid","type":0,"val":"commissions","end":""},{"old":"/api/v1/commissions/:commission_uuid","type":1,"val":"commission_uuid","end":""}],
     types: placeholder as Registry['client.commissions.destroy']['types'],
+  },
+  'client.password.update': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/password',
+    tokens: [{"old":"/api/v1/password","type":0,"val":"api","end":""},{"old":"/api/v1/password","type":0,"val":"v1","end":""},{"old":"/api/v1/password","type":0,"val":"password","end":""}],
+    types: placeholder as Registry['client.password.update']['types'],
   },
   'guest.commissions.store': {
     methods: ["POST"],

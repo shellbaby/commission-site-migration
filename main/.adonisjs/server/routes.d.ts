@@ -5,6 +5,7 @@ type ParamValue = string | number | bigint | boolean
 export type ScannedRoutes = {
   ALL: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
+    'link._dev.email/password_change': { paramsTuple?: []; params?: {} }
     'link.static.home': { paramsTuple?: []; params?: {} }
     'link.static.price': { paramsTuple?: []; params?: {} }
     'link.static.tos': { paramsTuple?: []; params?: {} }
@@ -27,12 +28,14 @@ export type ScannedRoutes = {
     'client.clients.destroy': { paramsTuple?: []; params?: {} }
     'client.commissions.store': { paramsTuple?: []; params?: {} }
     'client.commissions.destroy': { paramsTuple: [ParamValue]; params: {'commission_uuid': ParamValue} }
+    'client.password.update': { paramsTuple?: []; params?: {} }
     'guest.commissions.store': { paramsTuple?: []; params?: {} }
     'auth.session.store': { paramsTuple?: []; params?: {} }
     'auth.session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
+    'link._dev.email/password_change': { paramsTuple?: []; params?: {} }
     'link.static.home': { paramsTuple?: []; params?: {} }
     'link.static.price': { paramsTuple?: []; params?: {} }
     'link.static.tos': { paramsTuple?: []; params?: {} }
@@ -54,6 +57,7 @@ export type ScannedRoutes = {
   }
   HEAD: {
     'drive.fs.serve': { paramsTuple: [...ParamValue[]]; params: {'*': ParamValue[]} }
+    'link._dev.email/password_change': { paramsTuple?: []; params?: {} }
     'link.static.home': { paramsTuple?: []; params?: {} }
     'link.static.price': { paramsTuple?: []; params?: {} }
     'link.static.tos': { paramsTuple?: []; params?: {} }
@@ -81,6 +85,7 @@ export type ScannedRoutes = {
   }
   PATCH: {
     'client.clients.update': { paramsTuple?: []; params?: {} }
+    'client.password.update': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
     'client.clients.destroy': { paramsTuple?: []; params?: {} }

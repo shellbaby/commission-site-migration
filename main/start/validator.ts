@@ -26,6 +26,7 @@ vine.messagesProvider = new SimpleMessagesProvider({
     email: "Must be a valid email address",
 
     "password.regex": "Password is not secure enough",
+    "password_new.regex": "Password is not secure enough",
     "password_confirmation.confirmed": "Passwords do not match",
-    "name.regex": "Name format is invalid"
+    "name.regex": "Name format is invalid",
 })

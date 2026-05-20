@@ -8,6 +8,9 @@ export interface ApiDefinition {
     }
   }
   link: {
+    dev: {
+      emailPasswordChange: typeof routes['link._dev.email/password_change']
+    }
     static: {
       home: typeof routes['link.static.home']
       price: typeof routes['link.static.price']
@@ -50,6 +53,9 @@ export interface ApiDefinition {
     commissions: {
       store: typeof routes['client.commissions.store']
       destroy: typeof routes['client.commissions.destroy']
+    }
+    password: {
+      update: typeof routes['client.password.update']
     }
   }
   guest: {

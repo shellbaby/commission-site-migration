@@ -15,6 +15,29 @@ router.where("commission_uuid", router.matchers.uuid())
 
 router
     .group(() => {
+        // Dev-only //
+        router
+            .group(() => {
+                // router.get("/email/verify", async ({response}) => {
+                //     const html = await edge.render("email/verify", {
+                //         client
+                //     })
+                // })
+
+                router
+                    .get(
+                        "email/password_change",
+                        async ({ response, view }) => {
+                            return view.render("email/password_change", {
+                                client: { name: "test" },
+                            })
+                        }
+                    )
+                    .as("email/password_change")
+            })
+            .as("_dev")
+            .prefix("_dev")
+
         // Static links //
         router
             .group(() => {
@@ -155,6 +178,15 @@ router
                         commissions: "commission_uuid",
                     })
                     .use(["destroy"], middleware.auth())
+
+                router
+                    .group(() => {
+                        router.patch("/", [
+                            controllers.password.Password,
+                            "update",
+                        ])
+                    })
+                    .prefix("password")
             })
             .as("client")
 
